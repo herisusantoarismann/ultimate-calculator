@@ -11,6 +11,7 @@ import { HistoryItem } from "@/types/common";
 import { logErrorToSentry } from "@/lib/sentry";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { useCalculatorKeyboard } from "@/lib/useCalculatorKeyboard";
+import { useTranslation } from "@/context/LanguageContext";
 import { clsx } from "clsx";
 
 interface KeypadButtonConfig {
@@ -174,6 +175,7 @@ const KEYPAD_BUTTONS: readonly KeypadButtonConfig[] = [
 ];
 
 export const StandardCalculator: React.FC = () => {
+    const { t, locale } = useTranslation();
     const [expression, setExpression] = useState("");
     const [displayValue, setDisplayValue] = useState("0");
     const [isNewNumber, setIsNewNumber] = useState(true);
@@ -182,6 +184,32 @@ export const StandardCalculator: React.FC = () => {
         "calc-standard-history",
         [],
     );
+
+    const getButtonAriaLabel = (btn: KeypadButtonConfig) => {
+        switch (btn.action) {
+            case "clear":
+                return t.standard.buttons.clear;
+            case "toggleSign":
+                return t.standard.buttons.negate;
+            case "percent":
+                return t.standard.buttons.percent;
+            case "operator":
+                if (btn.value === "÷") return t.standard.buttons.divide;
+                if (btn.value === "×") return t.standard.buttons.multiply;
+                if (btn.value === "−") return t.standard.buttons.subtract;
+                if (btn.value === "+") return t.standard.buttons.add;
+                return btn.ariaLabel;
+            case "equals":
+                return t.standard.buttons.equals;
+            case "digit":
+                if (btn.value === ".") return t.standard.buttons.decimal;
+                return locale === "en"
+                    ? `Number ${btn.value}`
+                    : `Angka ${btn.value}`;
+            default:
+                return btn.ariaLabel;
+        }
+    };
 
     // Keyboard support
     useCalculatorKeyboard({
@@ -360,13 +388,13 @@ export const StandardCalculator: React.FC = () => {
                         <button
                             type="button"
                             onClick={() => setIsHistoryOpen(true)}
-                            aria-label="Lihat riwayat perhitungan"
+                            aria-label={t.common.viewHistory}
                             aria-expanded={isHistoryOpen}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 transition-colors calc-btn"
-                            title="Lihat riwayat perhitungan"
+                            title={t.common.viewHistory}
                         >
                             <History className="w-3.5 h-3.5 text-indigo-500" />
-                            <span>Riwayat</span>
+                            <span>{t.common.history}</span>
                             {(history || []).length > 0 && (
                                 <span className="w-4 h-4 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold">
                                     {(history || []).length}
@@ -380,9 +408,9 @@ export const StandardCalculator: React.FC = () => {
                         <button
                             type="button"
                             onClick={handleBackspace}
-                            aria-label="Hapus satu karakter"
+                            aria-label={t.common.backspace}
                             className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors calc-btn"
-                            title="Hapus digit terakhir"
+                            title={t.common.deleteDigit}
                         >
                             <Delete className="w-4 h-4" />
                         </button>
@@ -392,7 +420,7 @@ export const StandardCalculator: React.FC = () => {
                 {/* Display Screen */}
                 <div
                     role="region"
-                    aria-label="Layar kalkulator"
+                    aria-label={t.standard.displayLabel}
                     className="bg-slate-100/80 dark:bg-slate-950/80 rounded-2xl p-4 sm:p-5 mb-5 border border-slate-200/80 dark:border-slate-800/80 text-right shadow-inner"
                 >
                     <div
@@ -423,7 +451,7 @@ export const StandardCalculator: React.FC = () => {
                             key={btn.label}
                             type="button"
                             onClick={() => handleButtonClick(btn)}
-                            aria-label={btn.ariaLabel}
+                            aria-label={getButtonAriaLabel(btn)}
                             className={clsx(
                                 "calc-btn p-3 sm:p-4 rounded-2xl transition-colors",
                                 btn.className,

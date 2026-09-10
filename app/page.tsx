@@ -5,11 +5,11 @@ import { CalculatorCategory } from "@/types/common";
 import dynamic from "next/dynamic";
 import { Header } from "@/components/organisms/Header";
 import { Sidebar } from "@/components/organisms/Sidebar";
-import { CATEGORY_ITEMS } from "@/lib/constants";
 
 import { StandardCalculator } from "@/features/standard-calculator/components/StandardCalculator";
 import { CalculatorSkeleton } from "@/components/molecules/CalculatorSkeleton";
 import { Sparkles } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const ScientificCalculator = dynamic(
     () =>
@@ -58,13 +58,31 @@ const DateTimeCalculator = dynamic(
 );
 
 export default function HomePage() {
+    const { t } = useTranslation();
     const [activeCategory, setActiveCategory] =
         useState<CalculatorCategory>("standard");
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-    const activeItem =
-        CATEGORY_ITEMS.find((item) => item.id === activeCategory) ||
-        CATEGORY_ITEMS[0];
+    const getCategoryDetails = (id: CalculatorCategory) => {
+        switch (id) {
+            case "standard":
+                return t.nav.standard;
+            case "scientific":
+                return t.nav.scientific;
+            case "financial":
+                return t.nav.financial;
+            case "health":
+                return t.nav.health;
+            case "converter":
+                return t.nav.converter;
+            case "date-time":
+                return t.nav.dateTime;
+            default:
+                return { name: id, description: "" };
+        }
+    };
+
+    const activeDetails = getCategoryDetails(activeCategory);
 
     return (
         <div className="min-h-screen flex flex-col relative overflow-hidden bg-slate-50 dark:bg-[#090d16] transition-colors duration-300">
@@ -76,7 +94,7 @@ export default function HomePage() {
             {/* Header */}
             <Header
                 onToggleSidebar={() => setIsMobileSidebarOpen((prev) => !prev)}
-                activeCategoryName={activeItem.name}
+                activeCategoryName={activeDetails.name}
             />
 
             {/* Main Container */}
@@ -99,10 +117,10 @@ export default function HomePage() {
                     <div className="mb-6 sm:mb-8 text-center sm:text-left">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/60 mb-2">
                             <Sparkles className="w-3.5 h-3.5" />
-                            <span>{activeItem.description}</span>
+                            <span>{activeDetails.description}</span>
                         </div>
                         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                            {activeItem.name}
+                            {activeDetails.name}
                         </h1>
                     </div>
 
@@ -127,10 +145,10 @@ export default function HomePage() {
                     {/* Bottom Footer Note */}
                     <footer className="mt-12 pt-6 border-t border-slate-200/80 dark:border-slate-800/80 text-center text-xs text-slate-500 dark:text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3">
                         <div className="flex items-center gap-1.5">
-                            <span>Ultimate Calculator v1.0</span>
+                            <span>{t.common.version}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                            <span>Modern, Presisi & Bebas Iklan</span>
+                            <span>{t.common.footerNote}</span>
                         </div>
                     </footer>
                 </main>

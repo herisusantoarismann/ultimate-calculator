@@ -6,10 +6,12 @@ import { CopyButton } from "@/components/molecules/CopyButton";
 import { evaluateExpression } from "@/utils/mathUtils";
 import { logErrorToSentry } from "@/lib/sentry";
 import { useCalculatorKeyboard } from "@/lib/useCalculatorKeyboard";
+import { useTranslation } from "@/context/LanguageContext";
 import { Delete } from "lucide-react";
 import { clsx } from "clsx";
 
 export const ScientificCalculator: React.FC = () => {
+    const { t, locale } = useTranslation();
     const [expression, setExpression] = useState("");
     const [displayValue, setDisplayValue] = useState("0");
     const [isNewNumber, setIsNewNumber] = useState(true);
@@ -134,7 +136,13 @@ export const ScientificCalculator: React.FC = () => {
                 label: isInverse ? "sin⁻¹" : "sin",
                 action: "fn" as const,
                 value: isInverse ? "asin" : "sin",
-                ariaLabel: isInverse ? "Arkus sinus" : "Sinus",
+                ariaLabel: isInverse
+                    ? locale === "en"
+                        ? "Arcsine"
+                        : "Arkus sinus"
+                    : locale === "en"
+                      ? "Sine"
+                      : "Sinus",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -142,7 +150,13 @@ export const ScientificCalculator: React.FC = () => {
                 label: isInverse ? "cos⁻¹" : "cos",
                 action: "fn" as const,
                 value: isInverse ? "acos" : "cos",
-                ariaLabel: isInverse ? "Arkus kosinus" : "Kosinus",
+                ariaLabel: isInverse
+                    ? locale === "en"
+                        ? "Arccosine"
+                        : "Arkus kosinus"
+                    : locale === "en"
+                      ? "Cosine"
+                      : "Kosinus",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -150,7 +164,13 @@ export const ScientificCalculator: React.FC = () => {
                 label: isInverse ? "tan⁻¹" : "tan",
                 action: "fn" as const,
                 value: isInverse ? "atan" : "tan",
-                ariaLabel: isInverse ? "Arkus tangen" : "Tangen",
+                ariaLabel: isInverse
+                    ? locale === "en"
+                        ? "Arctangent"
+                        : "Arkus tangen"
+                    : locale === "en"
+                      ? "Tangent"
+                      : "Tangen",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -166,7 +186,8 @@ export const ScientificCalculator: React.FC = () => {
                 label: "e",
                 action: "text" as const,
                 value: "e",
-                ariaLabel: "Konstanta Euler",
+                ariaLabel:
+                    locale === "en" ? "Euler's constant" : "Konstanta Euler",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -177,8 +198,12 @@ export const ScientificCalculator: React.FC = () => {
                 action: "fn" as const,
                 value: isInverse ? "exp" : "ln",
                 ariaLabel: isInverse
-                    ? "Eksponen e pangkat x"
-                    : "Logaritma natural",
+                    ? locale === "en"
+                        ? "Exponent e to the power of x"
+                        : "Eksponen e pangkat x"
+                    : locale === "en"
+                      ? "Natural logarithm"
+                      : "Logaritma natural",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -186,7 +211,10 @@ export const ScientificCalculator: React.FC = () => {
                 label: "log₁₀",
                 action: "fn" as const,
                 value: "log",
-                ariaLabel: "Logaritma basis sepuluh",
+                ariaLabel:
+                    locale === "en"
+                        ? "Logarithm base ten"
+                        : "Logaritma basis sepuluh",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -194,7 +222,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "√x",
                 action: "fn" as const,
                 value: "sqrt",
-                ariaLabel: "Akar kuadrat",
+                ariaLabel: locale === "en" ? "Square root" : "Akar kuadrat",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -202,7 +230,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "xʸ",
                 action: "op" as const,
                 value: "^",
-                ariaLabel: "Pangkat y",
+                ariaLabel: locale === "en" ? "Power of y" : "Pangkat y",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -210,7 +238,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "x!",
                 action: "text" as const,
                 value: "!",
-                ariaLabel: "Faktorial",
+                ariaLabel: locale === "en" ? "Factorial" : "Faktorial",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -220,7 +248,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "(",
                 action: "text" as const,
                 value: "(",
-                ariaLabel: "Buka kurung",
+                ariaLabel: locale === "en" ? "Open parenthesis" : "Buka kurung",
                 className:
                     "p-2.5 sm:p-3 font-semibold text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -228,7 +256,8 @@ export const ScientificCalculator: React.FC = () => {
                 label: ")",
                 action: "text" as const,
                 value: ")",
-                ariaLabel: "Tutup kurung",
+                ariaLabel:
+                    locale === "en" ? "Close parenthesis" : "Tutup kurung",
                 className:
                     "p-2.5 sm:p-3 font-semibold text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -236,14 +265,14 @@ export const ScientificCalculator: React.FC = () => {
                 label: "mod",
                 action: "op" as const,
                 value: "%",
-                ariaLabel: "Modulus",
+                ariaLabel: locale === "en" ? "Modulo" : "Modulus",
                 className:
                     "p-2.5 sm:p-3 font-semibold text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
             {
                 label: "AC",
                 action: "clear" as const,
-                ariaLabel: "Hapus semua",
+                ariaLabel: locale === "en" ? "Clear all" : "Hapus semua",
                 className:
                     "p-2.5 sm:p-3 font-bold text-rose-600 dark:text-rose-400 bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/60 hover:bg-rose-100",
             },
@@ -251,7 +280,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "÷",
                 action: "op" as const,
                 value: "÷",
-                ariaLabel: "Bagi",
+                ariaLabel: locale === "en" ? "Divide" : "Bagi",
                 className:
                     "p-2.5 sm:p-3 font-bold text-base text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-900/60 hover:bg-indigo-100",
             },
@@ -261,7 +290,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "|x|",
                 action: "fn" as const,
                 value: "abs",
-                ariaLabel: "Nilai mutlak",
+                ariaLabel: locale === "en" ? "Absolute value" : "Nilai mutlak",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -269,7 +298,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "7",
                 action: "text" as const,
                 value: "7",
-                ariaLabel: "Angka 7",
+                ariaLabel: locale === "en" ? "Number 7" : "Angka 7",
                 className:
                     "p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
@@ -277,7 +306,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "8",
                 action: "text" as const,
                 value: "8",
-                ariaLabel: "Angka 8",
+                ariaLabel: locale === "en" ? "Number 8" : "Angka 8",
                 className:
                     "p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
@@ -285,7 +314,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "9",
                 action: "text" as const,
                 value: "9",
-                ariaLabel: "Angka 9",
+                ariaLabel: locale === "en" ? "Number 9" : "Angka 9",
                 className:
                     "p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
@@ -293,7 +322,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "×",
                 action: "op" as const,
                 value: "×",
-                ariaLabel: "Kali",
+                ariaLabel: locale === "en" ? "Multiply" : "Kali",
                 className:
                     "p-2.5 sm:p-3 font-bold text-base text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-900/60 hover:bg-indigo-100",
             },
@@ -303,7 +332,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "³√x",
                 action: "fn" as const,
                 value: "cbrt",
-                ariaLabel: "Akar kubik",
+                ariaLabel: locale === "en" ? "Cube root" : "Akar kubik",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -311,7 +340,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "4",
                 action: "text" as const,
                 value: "4",
-                ariaLabel: "Angka 4",
+                ariaLabel: locale === "en" ? "Number 4" : "Angka 4",
                 className:
                     "p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
@@ -319,7 +348,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "5",
                 action: "text" as const,
                 value: "5",
-                ariaLabel: "Angka 5",
+                ariaLabel: locale === "en" ? "Number 5" : "Angka 5",
                 className:
                     "p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
@@ -327,7 +356,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "6",
                 action: "text" as const,
                 value: "6",
-                ariaLabel: "Angka 6",
+                ariaLabel: locale === "en" ? "Number 6" : "Angka 6",
                 className:
                     "p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
@@ -335,7 +364,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "−",
                 action: "op" as const,
                 value: "−",
-                ariaLabel: "Kurang",
+                ariaLabel: locale === "en" ? "Subtract" : "Kurang",
                 className:
                     "p-2.5 sm:p-3 font-bold text-base text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-900/60 hover:bg-indigo-100",
             },
@@ -344,7 +373,10 @@ export const ScientificCalculator: React.FC = () => {
             {
                 label: "±",
                 action: "toggleSign" as const,
-                ariaLabel: "Ubah tanda plus minus",
+                ariaLabel:
+                    locale === "en"
+                        ? "Toggle plus minus sign"
+                        : "Ubah tanda plus minus",
                 className:
                     "p-2.5 sm:p-3 font-semibold text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -352,7 +384,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "1",
                 action: "text" as const,
                 value: "1",
-                ariaLabel: "Angka 1",
+                ariaLabel: locale === "en" ? "Number 1" : "Angka 1",
                 className:
                     "p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
@@ -360,7 +392,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "2",
                 action: "text" as const,
                 value: "2",
-                ariaLabel: "Angka 2",
+                ariaLabel: locale === "en" ? "Number 2" : "Angka 2",
                 className:
                     "p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
@@ -368,7 +400,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "3",
                 action: "text" as const,
                 value: "3",
-                ariaLabel: "Angka 3",
+                ariaLabel: locale === "en" ? "Number 3" : "Angka 3",
                 className:
                     "p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
@@ -376,7 +408,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "+",
                 action: "op" as const,
                 value: "+",
-                ariaLabel: "Tambah",
+                ariaLabel: locale === "en" ? "Add" : "Tambah",
                 className:
                     "p-2.5 sm:p-3 font-bold text-base text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-900/60 hover:bg-indigo-100",
             },
@@ -386,7 +418,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "x²",
                 action: "text" as const,
                 value: "^2",
-                ariaLabel: "Kuadrat",
+                ariaLabel: locale === "en" ? "Square" : "Kuadrat",
                 className:
                     "p-2.5 sm:p-3 font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/70 hover:bg-slate-200/90 dark:hover:bg-slate-700",
             },
@@ -394,7 +426,7 @@ export const ScientificCalculator: React.FC = () => {
                 label: "0",
                 action: "text" as const,
                 value: "0",
-                ariaLabel: "Angka 0",
+                ariaLabel: locale === "en" ? "Number 0" : "Angka 0",
                 className:
                     "col-span-2 p-3 font-semibold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50 text-left pl-5",
             },
@@ -402,19 +434,19 @@ export const ScientificCalculator: React.FC = () => {
                 label: ".",
                 action: "text" as const,
                 value: ".",
-                ariaLabel: "Koma desimal",
+                ariaLabel: locale === "en" ? "Decimal point" : "Koma desimal",
                 className:
                     "p-3 font-bold text-base text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:bg-slate-50",
             },
             {
                 label: "=",
                 action: "calc" as const,
-                ariaLabel: "Sama dengan",
+                ariaLabel: locale === "en" ? "Equals" : "Sama dengan",
                 className:
                     "p-3 font-bold text-lg text-white bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 shadow-lg shadow-indigo-500/30",
             },
         ],
-        [isInverse],
+        [isInverse, locale],
     );
 
     return (
@@ -428,7 +460,7 @@ export const ScientificCalculator: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={() => setAngleUnit("DEG")}
-                                aria-label="Mode sudut derajat"
+                                aria-label={t.scientific.degMode}
                                 className={clsx(
                                     "px-2.5 py-1 rounded-lg text-xs font-semibold transition-all calc-btn",
                                     angleUnit === "DEG"
@@ -441,7 +473,7 @@ export const ScientificCalculator: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={() => setAngleUnit("RAD")}
-                                aria-label="Mode sudut radian"
+                                aria-label={t.scientific.radMode}
                                 className={clsx(
                                     "px-2.5 py-1 rounded-lg text-xs font-semibold transition-all calc-btn",
                                     angleUnit === "RAD"
@@ -457,7 +489,7 @@ export const ScientificCalculator: React.FC = () => {
                         <button
                             type="button"
                             onClick={() => setIsInverse(!isInverse)}
-                            aria-label="Fungsi inversi kedua"
+                            aria-label={t.scientific.inverseToggle}
                             aria-pressed={isInverse}
                             className={clsx(
                                 "px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all calc-btn",
@@ -475,9 +507,9 @@ export const ScientificCalculator: React.FC = () => {
                         <button
                             type="button"
                             onClick={handleBackspace}
-                            aria-label="Hapus satu digit"
+                            aria-label={t.scientific.deleteDigit}
                             className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors calc-btn"
-                            title="Hapus digit"
+                            title={t.common.deleteDigit}
                         >
                             <Delete className="w-4 h-4" />
                         </button>
@@ -487,7 +519,7 @@ export const ScientificCalculator: React.FC = () => {
                 {/* Display Screen */}
                 <div
                     role="region"
-                    aria-label="Layar kalkulator ilmiah"
+                    aria-label={t.scientific.displayLabel}
                     className="bg-slate-100/80 dark:bg-slate-950/80 rounded-2xl p-4 sm:p-5 mb-5 border border-slate-200/80 dark:border-slate-800/80 text-right shadow-inner"
                 >
                     <div

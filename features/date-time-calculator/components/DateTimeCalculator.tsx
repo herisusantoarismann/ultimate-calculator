@@ -7,27 +7,30 @@ import { DateDiffCalculator } from "./DateDiffCalculator";
 import { DateAddSubCalculator } from "./DateAddSubCalculator";
 import { CalendarDays, CalendarPlus } from "lucide-react";
 
-const DATE_TABS: TabPillItem<DateTimeSubTab>[] = [
-    {
-        id: "diff",
-        label: "Selisih Dua Tanggal",
-        icon: <CalendarDays className="w-4 h-4" />,
-    },
-    {
-        id: "add-sub",
-        label: "Tambah / Kurang Hari",
-        icon: <CalendarPlus className="w-4 h-4" />,
-    },
-];
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const DateTimeCalculator: React.FC = () => {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<DateTimeSubTab>("diff");
+
+    const tabs: TabPillItem<DateTimeSubTab>[] = [
+        {
+            id: "diff",
+            label: t.dateTime.tabs.difference,
+            icon: <CalendarDays className="w-4 h-4" />,
+        },
+        {
+            id: "add-sub",
+            label: t.dateTime.tabs.addSubtract,
+            icon: <CalendarPlus className="w-4 h-4" />,
+        },
+    ];
 
     return (
         <div className="space-y-6">
             <div className="flex justify-center">
                 <TabPills
-                    tabs={DATE_TABS}
+                    tabs={tabs}
                     activeTab={activeTab}
                     onChange={(tabId) => setActiveTab(tabId)}
                 />

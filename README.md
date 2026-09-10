@@ -55,7 +55,13 @@ Dilengkapi dengan pemantauan performa **Core Web Vitals**, logging exception ber
     - **Selisih Tanggal**: Total hari, rincian Tahun-Bulan-Hari, jumlah minggu, dan pemisahan Hari Kerja vs Akhir Pekan.
     - **Tambah / Kurang Hari**: Hitung tanggal target berdasarkan penambahan atau pengurangan hari kalender.
 
-7. **⚡ Aksesibilitas & Performa Maksimal**
+7. **🌐 Dukungan Dwibahasa (Dual Language i18n)**
+    - Mendukung **Bahasa Indonesia (`id`, default)** dan **English (`en`)**.
+    - Transisi instan tanpa reload halaman melalui type-safe React Context & TypeScript dictionaries.
+    - Sinkronisasi otomatis ke `document.documentElement.lang` (a11y/SEO) dan persistensi ke `localStorage`.
+    - Tombol pengalih bahasa (`LanguageToggle`) terintegrasi langsung di Header.
+
+8. **⚡ Aksesibilitas & Performa Maksimal**
     - Skor LCP cepat dengan static shell import pada landing page.
     - Zero layout shift (CLS = 0) dengan `CalculatorSkeleton` saat memuat kategori dinamis.
     - Keyboard navigation, ARIA live region polite screen reader, dan tombol lewati ke konten utama.
@@ -116,5 +122,5 @@ npm run build-storybook
 ## 📖 Dokumentasi Lengkap
 
 - **[Developer Onboarding Guide](docs/ONBOARDING.md)**: Panduan arsitektur, struktur Atomic Design, standar kode, dan cara setup.
-- **[Architecture Decision Records (ADRs)](docs/adr/README.md)**: Riwayat keputusan arsitektur (ADR-001 s/d ADR-009).
+- **[Architecture Decision Records (ADRs)](docs/adr/README.md)**: Riwayat keputusan arsitektur (ADR-001 s/d ADR-010).
 - **[Spesifikasi Test Cases](TEST_CASES.md)**: Dokumentasi matriks pengujian matematis dan alur E2E.

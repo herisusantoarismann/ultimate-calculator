@@ -5,6 +5,8 @@ import { HistoryItem } from "@/types/common";
 import { Trash2, X, Clock, ArrowLeft } from "lucide-react";
 import { CopyButton } from "@/components/molecules/CopyButton";
 
+import { useTranslation } from "@/hooks/useTranslation";
+
 interface HistoryDrawerProps {
     isOpen: boolean;
     onClose: () => void;
@@ -20,6 +22,8 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
     onSelectHistory,
     onClearHistory,
 }) => {
+    const { t } = useTranslation();
+
     if (!isOpen) return null;
 
     return (
@@ -29,7 +33,7 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                 <div className="flex items-center gap-2">
                     <Clock className="w-5 h-5 text-indigo-500" />
                     <h3 className="font-semibold text-slate-800 dark:text-white text-base">
-                        Riwayat Perhitungan
+                        {t.standard.historyTitle}
                     </h3>
                     <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
                         {history.length}
@@ -43,13 +47,13 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors calc-btn"
                         >
                             <Trash2 className="w-3.5 h-3.5" />
-                            <span>Hapus Semua</span>
+                            <span>{t.common.clearHistory}</span>
                         </button>
                     )}
                     <button
                         type="button"
                         onClick={onClose}
-                        aria-label="Tutup riwayat"
+                        aria-label={t.standard.historyClose}
                         className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
                     >
                         <X className="w-5 h-5" />
@@ -62,10 +66,11 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                 {history.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-center text-slate-400 p-6">
                         <Clock className="w-10 h-10 mb-2 stroke-1 text-slate-300 dark:text-slate-600" />
-                        <p className="text-sm font-medium">Belum ada riwayat</p>
+                        <p className="text-sm font-medium">
+                            {t.common.noHistory}
+                        </p>
                         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                            Hasil perhitungan Anda akan otomatis tersimpan di
-                            sini.
+                            {t.standard.historyEmpty}
                         </p>
                     </div>
                 ) : (
@@ -95,7 +100,7 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                                 <CopyButton
                                     textToCopy={item.result}
                                     size="sm"
-                                    label="Salin"
+                                    label={t.common.copy}
                                 />
                             </div>
                         </div>
@@ -111,7 +116,7 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                     className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                 >
                     <ArrowLeft className="w-3.5 h-3.5" />
-                    <span>Kembali ke Kalkulator</span>
+                    <span>{t.standard.backToCalculator}</span>
                 </button>
             </div>
         </div>

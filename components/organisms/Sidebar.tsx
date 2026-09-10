@@ -16,6 +16,7 @@ import { CATEGORY_ITEMS } from "@/lib/constants";
 import { Badge } from "@/components/atoms/Badge";
 import { IconButton } from "@/components/atoms/IconButton";
 import { clsx } from "clsx";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export interface SidebarProps {
     activeCategory: CalculatorCategory;
@@ -46,6 +47,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
     isOpenMobile,
     onCloseMobile,
 }) => {
+    const { t } = useTranslation();
+
+    const getCategoryDetails = (id: CalculatorCategory) => {
+        switch (id) {
+            case "standard":
+                return t.nav.standard;
+            case "scientific":
+                return t.nav.scientific;
+            case "financial":
+                return t.nav.financial;
+            case "health":
+                return t.nav.health;
+            case "converter":
+                return t.nav.converter;
+            case "date-time":
+                return t.nav.dateTime;
+            default:
+                return { name: id, description: "" };
+        }
+    };
+
     const content = (
         <div className="flex flex-col h-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-r border-slate-200/80 dark:border-slate-800/80 p-4">
             {/* Mobile Top Close Header */}
@@ -55,11 +77,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <Calculator className="w-4 h-4" />
                     </div>
                     <span className="font-bold text-slate-800 dark:text-white">
-                        Pilih Kalkulator
+                        {t.nav.selectCalculator}
                     </span>
                 </div>
                 <IconButton
-                    aria-label="Tutup menu navigasi"
+                    aria-label={t.nav.closeMenu}
                     onClick={onCloseMobile}
                     icon={<X className="w-5 h-5" />}
                 />
@@ -68,11 +90,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Navigation List */}
             <div className="space-y-1.5 flex-1 overflow-y-auto pr-1">
                 <div className="px-3 py-1.5 text-[11px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-500">
-                    Kategori
+                    {t.nav.categories}
                 </div>
                 {CATEGORY_ITEMS.map((item) => {
                     const Icon = CATEGORY_ICONS[item.id];
                     const isActive = activeCategory === item.id;
+                    const details = getCategoryDetails(item.id);
                     return (
                         <button
                             key={item.id}
@@ -101,7 +124,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm truncate">
-                                        {item.name}
+                                        {details.name}
                                     </span>
                                     {item.badge && (
                                         <Badge
@@ -126,7 +149,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                             : "text-slate-400 dark:text-slate-500",
                                     )}
                                 >
-                                    {item.description}
+                                    {details.description}
                                 </p>
                             </div>
                         </button>
@@ -138,18 +161,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="mt-4 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70">
                 <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     <Command className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Keyboard Ready</span>
+                    <span>{t.common.keyboardReady}</span>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Gunakan Numpad,{" "}
-                    <kbd className="px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px]">
-                        Enter
-                    </kbd>{" "}
-                    untuk hasil, dan{" "}
-                    <kbd className="px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px]">
-                        Esc
-                    </kbd>{" "}
-                    untuk hapus.
+                    {t.common.keyboardHint}
                 </p>
             </div>
         </div>

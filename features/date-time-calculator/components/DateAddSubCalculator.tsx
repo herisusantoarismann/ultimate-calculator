@@ -4,12 +4,14 @@ import React, { useState, useMemo } from "react";
 import { Card } from "@/components/atoms/Card";
 import { CopyButton } from "@/components/molecules/CopyButton";
 import { CalendarPlus, Plus, Minus } from "lucide-react";
-import { addSubtractDate, formatDateIndo } from "@/utils/formatters";
+import { addSubtractDate, formatDateLocale } from "@/utils/formatters";
+import { useTranslation } from "@/context/LanguageContext";
 import { clsx } from "clsx";
 
 type TimeUnit = "days" | "weeks" | "months" | "years";
 
 export const DateAddSubCalculator: React.FC = () => {
+    const { t, locale } = useTranslation();
     const todayStr = new Date().toISOString().split("T")[0];
 
     const [baseDateStr, setBaseDateStr] = useState<string>(todayStr);
@@ -24,7 +26,16 @@ export const DateAddSubCalculator: React.FC = () => {
         return addSubtractDate(base, amount, operation, unit);
     }, [baseDateStr, amount, operation, unit]);
 
-    const targetDateFormatted = targetDate ? formatDateIndo(targetDate) : "";
+    const targetDateFormatted = targetDate
+        ? formatDateLocale(targetDate, locale)
+        : "";
+
+    const unitLabels: Record<TimeUnit, string> = {
+        days: t.dateTime.addSubtract.days,
+        weeks: t.dateTime.addSubtract.weeks,
+        months: t.dateTime.addSubtract.months,
+        years: t.dateTime.addSubtract.years,
+    };
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-4xl mx-auto">
@@ -33,14 +44,14 @@ export const DateAddSubCalculator: React.FC = () => {
                 <div className="flex items-center gap-2 pb-3 border-b border-slate-200/80 dark:border-slate-800">
                     <CalendarPlus className="w-5 h-5 text-indigo-500" />
                     <h3 className="font-bold text-slate-800 dark:text-white text-base">
-                        Tambah atau Kurang Tanggal
+                        {t.dateTime.addSubtract.title}
                     </h3>
                 </div>
 
                 {/* Tanggal Mulai */}
                 <div>
                     <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                        Mulai dari Tanggal
+                        {t.dateTime.addSubtract.baseDate}
                     </label>
                     <input
                         type="date"
@@ -49,14 +60,14 @@ export const DateAddSubCalculator: React.FC = () => {
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                     />
                     <p className="text-[11px] text-slate-400 mt-1">
-                        {formatDateIndo(new Date(baseDateStr))}
+                        {formatDateLocale(new Date(baseDateStr), locale)}
                     </p>
                 </div>
 
                 {/* Operasi: Tambah vs Kurang */}
                 <div>
                     <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                        Operasi
+                        {t.dateTime.addSubtract.operation}
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                         <button
@@ -70,7 +81,7 @@ export const DateAddSubCalculator: React.FC = () => {
                             )}
                         >
                             <Plus className="w-4 h-4" />
-                            <span>Tambah (+)</span>
+                            <span>{t.dateTime.addSubtract.add}</span>
                         </button>
                         <button
                             type="button"
@@ -83,7 +94,7 @@ export const DateAddSubCalculator: React.FC = () => {
                             )}
                         >
                             <Minus className="w-4 h-4" />
-                            <span>Kurang (−)</span>
+                            <span>{t.dateTime.addSubtract.subtract}</span>
                         </button>
                     </div>
                 </div>
@@ -92,7 +103,7 @@ export const DateAddSubCalculator: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                            Jumlah
+                            {t.dateTime.addSubtract.amount}
                         </label>
                         <input
                             type="number"
@@ -106,7 +117,7 @@ export const DateAddSubCalculator: React.FC = () => {
 
                     <div>
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                            Satuan
+                            {t.dateTime.addSubtract.timeUnit}
                         </label>
                         <select
                             value={unit}
@@ -115,10 +126,10 @@ export const DateAddSubCalculator: React.FC = () => {
                             }
                             className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-medium text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer"
                         >
-                            <option value="days">Hari</option>
-                            <option value="weeks">Minggu</option>
-                            <option value="months">Bulan</option>
-                            <option value="years">Tahun</option>
+                            <option value="days">{unitLabels.days}</option>
+                            <option value="weeks">{unitLabels.weeks}</option>
+                            <option value="months">{unitLabels.months}</option>
+                            <option value="years">{unitLabels.years}</option>
                         </select>
                     </div>
                 </div>
@@ -130,7 +141,7 @@ export const DateAddSubCalculator: React.FC = () => {
                     <div>
                         <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800 mb-4">
                             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                                Tanggal Hasil
+                                {t.dateTime.addSubtract.targetDate}
                             </span>
                             <CopyButton
                                 textToCopy={targetDateFormatted}
@@ -141,17 +152,13 @@ export const DateAddSubCalculator: React.FC = () => {
                         <div className="mb-6">
                             <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
                                 {operation === "add"
-                                    ? "Ditambahkan"
-                                    : "Dikurangkan"}{" "}
-                                {amount}{" "}
-                                {unit === "days"
-                                    ? "Hari"
-                                    : unit === "weeks"
-                                      ? "Minggu"
-                                      : unit === "months"
-                                        ? "Bulan"
-                                        : "Tahun"}
-                                :
+                                    ? locale === "en"
+                                        ? "Added"
+                                        : "Ditambahkan"
+                                    : locale === "en"
+                                      ? "Subtracted"
+                                      : "Dikurangkan"}{" "}
+                                {amount} {unitLabels[unit]}:
                             </p>
                             <div className="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400 tracking-tight">
                                 {targetDateFormatted}
@@ -163,32 +170,42 @@ export const DateAddSubCalculator: React.FC = () => {
 
                         <div className="p-4 rounded-2xl bg-white/70 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800 space-y-2">
                             <div className="text-xs text-slate-500 dark:text-slate-400">
-                                Hari dalam seminggu:{" "}
+                                {locale === "en"
+                                    ? "Day of week:"
+                                    : "Hari dalam seminggu:"}{" "}
                                 <span className="font-bold text-slate-800 dark:text-white font-sans">
-                                    {new Intl.DateTimeFormat("id-ID", {
-                                        weekday: "long",
-                                    }).format(targetDate)}
+                                    {new Intl.DateTimeFormat(
+                                        locale === "en" ? "en-US" : "id-ID",
+                                        { weekday: "long" },
+                                    ).format(targetDate)}
                                 </span>
                             </div>
                             <div className="text-xs text-slate-500 dark:text-slate-400">
                                 Status:{" "}
                                 <span className="font-medium text-emerald-600 dark:text-emerald-400">
                                     {targetDate > new Date()
-                                        ? "Masa Mendatang (Future)"
-                                        : "Masa Lalu (Past)"}
+                                        ? locale === "en"
+                                            ? "Future Date"
+                                            : "Masa Mendatang (Future)"
+                                        : locale === "en"
+                                          ? "Past Date"
+                                          : "Masa Lalu (Past)"}
                                 </span>
                             </div>
                         </div>
                     </div>
                 ) : (
                     <div className="text-center text-slate-400 py-10">
-                        Masukkan parameter untuk menghitung
+                        {locale === "en"
+                            ? "Enter parameters to calculate"
+                            : "Masukkan parameter untuk menghitung"}
                     </div>
                 )}
 
                 <div className="text-[11px] text-slate-400 text-center">
-                    Kalkulator penanggalan serbaguna untuk perencanaan dan
-                    deadline proyek
+                    {locale === "en"
+                        ? "Versatile calendar calculator for planning and project deadlines"
+                        : "Kalkulator penanggalan serbaguna untuk perencanaan dan deadline proyek"}
                 </div>
             </Card>
         </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { WebVitalsMonitor } from "@/components/analytics/WebVitalsMonitor";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 export const metadata: Metadata = {
     title: "Ultimate Calculator - Kalkulator Serba Bisa Modern",
@@ -33,7 +34,7 @@ export default function RootLayout({
                     Lewati ke Konten Utama
                 </a>
                 <WebVitalsMonitor />
-                {children}
+                <LanguageProvider>{children}</LanguageProvider>
             </body>
         </html>
     );

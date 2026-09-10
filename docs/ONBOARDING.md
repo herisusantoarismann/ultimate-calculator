@@ -168,6 +168,27 @@ Setiap commit dan pull request ke branch `main`, `master`, atau `develop` akan s
 - **Human Review Enforcement**: Seluruh PR Dependabot mewajibkan peninjauan manusia (_approval_) setelah seluruh cek CI berstatus hijau. Auto-merge sengaja dinonaktifkan untuk menjaga stabilitas sistem.
 - Workflow helper (`.github/workflows/dependabot-automation.yml`) akan otomatis menyematkan label tipe update dan checklist review pengembang.
 
+### 7. Panduan Internasionalisasi (i18n & Dual Language)
+
+Ultimate Calculator menerapkan sistem dwibahasa (**Bahasa Indonesia `id` (default)** & **English `en`**) yang berbasis Type-Safe React Context dan kamus TypeScript (lihat [ADR-0010](./adr/0010-internationalization-dual-language-i18n.md)):
+
+- **Struktur Kamus**:
+    - [`types/i18n.ts`](../types/i18n.ts): Kontrak antarmuka `TranslationSchema` yang mengikat semua string teks.
+    - [`locales/id.ts`](../locales/id.ts) & [`locales/en.ts`](../locales/en.ts): Implementasi kamus untuk masing-masing bahasa.
+- **Cara Menggunakan di Komponen**:
+    ```tsx
+    import { useTranslation } from "@/hooks/useTranslation";
+
+    export const MyComponent: React.FC = () => {
+        const { t, locale, toggleLocale } = useTranslation();
+        return <button onClick={toggleLocale}>{t.common.results}</button>;
+    };
+    ```
+- **Aturan Menambahkan Teks Baru**:
+    1. Daftarkan kunci baru pada interface `TranslationSchema` di `types/i18n.ts`.
+    2. Tambahkan string terjemahan di `locales/id.ts` dan `locales/en.ts`. TypeScript compiler akan langsung memvalidasi jika ada kunci yang tertinggal.
+    3. Jalankan `npm test` untuk memverifikasi keselarasan kunci otomatis melalui suite `tests/i18n.test.tsx`.
+
 ---
 
 ## 📐 Standar Penulisan Kode (Coding Guidelines)

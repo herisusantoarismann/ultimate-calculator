@@ -17,6 +17,7 @@ Repositori ini mencatat keputusan-keputusan arsitektur penting (_Architecture De
 | [ADR-007](0007-github-actions-ci.md)                            | Penerapan Pipeline Continuous Integration (CI) GitHub Actions  | **Accepted** | 2026-09-10 |
 | [ADR-008](0008-dependabot-and-security-review.md)               | Otomasi Dependensi & Keamanan dengan Dependabot & Human Review | **Accepted** | 2026-09-10 |
 | [ADR-009](0009-performance-optimization-and-core-web-vitals.md) | Optimasi Performa, Core Web Vitals (LCP/INP/CLS) & Efisiensi   | **Accepted** | 2026-09-10 |
+| [ADR-010](0010-internationalization-dual-language-i18n.md)      | Sistem Internasionalisasi Ringan & Type-Safe (Dual Language)   | **Accepted** | 2026-09-10 |
 
 ---
 

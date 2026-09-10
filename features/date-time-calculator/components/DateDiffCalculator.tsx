@@ -4,9 +4,11 @@ import React, { useState, useMemo } from "react";
 import { Card } from "@/components/atoms/Card";
 import { CopyButton } from "@/components/molecules/CopyButton";
 import { CalendarDays, Briefcase, Calendar } from "lucide-react";
-import { calculateDateDiff, formatDateIndo } from "@/utils/formatters";
+import { calculateDateDiff, formatDateLocale } from "@/utils/formatters";
+import { useTranslation } from "@/context/LanguageContext";
 
 export const DateDiffCalculator: React.FC = () => {
+    const { t, locale } = useTranslation();
     const todayStr = new Date().toISOString().split("T")[0];
     const nextMonth = new Date();
     nextMonth.setDate(nextMonth.getDate() + 45);
@@ -28,7 +30,9 @@ export const DateDiffCalculator: React.FC = () => {
     }, [startDateStr, endDateStr, includeEndDay]);
 
     const copyText = diffResult
-        ? `Selisih: ${diffResult.totalDays} Hari (${diffResult.years} Tahun, ${diffResult.months} Bulan, ${diffResult.days} Hari)`
+        ? locale === "en"
+            ? `Difference: ${diffResult.totalDays} Days (${diffResult.years} Years, ${diffResult.months} Months, ${diffResult.days} Days)`
+            : `Selisih: ${diffResult.totalDays} Hari (${diffResult.years} Tahun, ${diffResult.months} Bulan, ${diffResult.days} Hari)`
         : "";
 
     return (
@@ -38,14 +42,14 @@ export const DateDiffCalculator: React.FC = () => {
                 <div className="flex items-center gap-2 pb-3 border-b border-slate-200/80 dark:border-slate-800">
                     <CalendarDays className="w-5 h-5 text-indigo-500" />
                     <h3 className="font-bold text-slate-800 dark:text-white text-base">
-                        Rentang Dua Tanggal
+                        {t.dateTime.difference.title}
                     </h3>
                 </div>
 
                 {/* Start Date */}
                 <div>
                     <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                        Tanggal Awal (Mulai)
+                        {t.dateTime.difference.startDate}
                     </label>
                     <input
                         type="date"
@@ -54,14 +58,14 @@ export const DateDiffCalculator: React.FC = () => {
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                     />
                     <p className="text-[11px] text-slate-400 mt-1">
-                        {formatDateIndo(new Date(startDateStr))}
+                        {formatDateLocale(new Date(startDateStr), locale)}
                     </p>
                 </div>
 
                 {/* End Date */}
                 <div>
                     <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                        Tanggal Akhir (Selesai)
+                        {t.dateTime.difference.endDate}
                     </label>
                     <input
                         type="date"
@@ -70,7 +74,7 @@ export const DateDiffCalculator: React.FC = () => {
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                     />
                     <p className="text-[11px] text-slate-400 mt-1">
-                        {formatDateIndo(new Date(endDateStr))}
+                        {formatDateLocale(new Date(endDateStr), locale)}
                     </p>
                 </div>
 
@@ -83,9 +87,7 @@ export const DateDiffCalculator: React.FC = () => {
                             onChange={(e) => setIncludeEndDay(e.target.checked)}
                             className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500"
                         />
-                        <span>
-                            Sertakan hari terakhir dalam perhitungan (+1 hari)
-                        </span>
+                        <span>{t.dateTime.difference.includeEndDay}</span>
                     </label>
                 </div>
             </Card>
@@ -96,7 +98,7 @@ export const DateDiffCalculator: React.FC = () => {
                     <div>
                         <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800 mb-4">
                             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                                Hasil Durasi
+                                {t.common.results}
                             </span>
                             <CopyButton textToCopy={copyText} size="sm" />
                         </div>
@@ -104,12 +106,12 @@ export const DateDiffCalculator: React.FC = () => {
                         {/* Total Days Hero */}
                         <div className="mb-5">
                             <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                                Total Selisih Hari:
+                                {t.dateTime.difference.totalDays}
                             </p>
                             <div className="text-4xl sm:text-5xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono tracking-tight">
                                 {diffResult.totalDays}{" "}
                                 <span className="text-lg font-sans font-medium text-slate-500">
-                                    Hari
+                                    {t.dateTime.difference.days}
                                 </span>
                             </div>
                         </div>
@@ -118,25 +120,30 @@ export const DateDiffCalculator: React.FC = () => {
                         <div className="space-y-3">
                             <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800 space-y-2">
                                 <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                    Rincian Kalender:
+                                    {t.dateTime.difference.calendarBreakdown}
                                 </div>
                                 <div className="text-sm font-semibold text-slate-800 dark:text-slate-200 font-mono">
                                     {diffResult.years > 0 &&
-                                        `${diffResult.years} Tahun, `}
+                                        `${diffResult.years} ${t.dateTime.difference.years}, `}
                                     {diffResult.months > 0 &&
-                                        `${diffResult.months} Bulan, `}
-                                    {diffResult.days} Hari
+                                        `${diffResult.months} ${t.dateTime.difference.months}, `}
+                                    {diffResult.days}{" "}
+                                    {t.dateTime.difference.days}
                                 </div>
                                 <div className="text-xs text-slate-500 dark:text-slate-400">
-                                    Setara dengan{" "}
+                                    {locale === "en"
+                                        ? "Equivalent to "
+                                        : "Setara dengan "}
                                     <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">
                                         {diffResult.weeks}
                                     </span>{" "}
-                                    Minggu dan{" "}
+                                    {locale === "en"
+                                        ? "weeks and "
+                                        : "Minggu dan "}
                                     <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">
                                         {diffResult.remainingDays}
                                     </span>{" "}
-                                    Hari
+                                    {t.dateTime.difference.days}
                                 </div>
                             </div>
 
@@ -145,12 +152,14 @@ export const DateDiffCalculator: React.FC = () => {
                                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
                                     <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-1">
                                         <Briefcase className="w-3.5 h-3.5 text-emerald-500" />
-                                        <span>Hari Kerja (Sen-Jum)</span>
+                                        <span>
+                                            {t.dateTime.difference.workdays}
+                                        </span>
                                     </div>
                                     <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
                                         {diffResult.weekdaysCount}{" "}
                                         <span className="text-xs font-sans font-normal text-slate-400">
-                                            hari
+                                            {t.dateTime.difference.days.toLowerCase()}
                                         </span>
                                     </div>
                                 </div>
@@ -158,13 +167,17 @@ export const DateDiffCalculator: React.FC = () => {
                                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
                                     <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-1">
                                         <Calendar className="w-3.5 h-3.5 text-amber-500" />
-                                        <span>Akhir Pekan (Sab-Min)</span>
+                                        <span>
+                                            {locale === "en"
+                                                ? "Weekends (Sat-Sun)"
+                                                : "Akhir Pekan (Sab-Min)"}
+                                        </span>
                                     </div>
                                     <div className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400">
                                         {diffResult.totalDays -
                                             diffResult.weekdaysCount}{" "}
                                         <span className="text-xs font-sans font-normal text-slate-400">
-                                            hari
+                                            {t.dateTime.difference.days.toLowerCase()}
                                         </span>
                                     </div>
                                 </div>
@@ -173,7 +186,9 @@ export const DateDiffCalculator: React.FC = () => {
                     </div>
                 ) : (
                     <div className="text-center text-slate-400 py-10">
-                        Pilih tanggal untuk melihat hasil
+                        {locale === "en"
+                            ? "Select dates to view results"
+                            : "Pilih tanggal untuk melihat hasil"}
                     </div>
                 )}
 
