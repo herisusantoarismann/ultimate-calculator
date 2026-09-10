@@ -1,0 +1,48 @@
+version: 2
+updates:
+    # 1. NPM Dependencies (Application & Development packages)
+    - package-ecosystem: "npm"
+      directory: "/"
+      schedule:
+          interval: "weekly"
+          day: "monday"
+          time: "03:00"
+          timezone: "Asia/Jakarta"
+      open-pull-requests-limit: 10
+      commit-message:
+          prefix: "chore(deps)"
+          include: "scope"
+      labels:
+          - "dependencies"
+          - "needs-human-review"
+      # Mengelompokkan minor dan patch updates agar tidak membanjiri PR
+      groups:
+          dev-dependencies:
+              dependency-type: "development"
+              update-types:
+                  - "minor"
+                  - "patch"
+          prod-dependencies:
+              dependency-type: "production"
+              update-types:
+                  - "minor"
+                  - "patch"
+      # Major updates tetap dibuat sebagai PR terpisah untuk review mendalam (breaking changes)
+      versioning-strategy: increase
+
+    # 2. GitHub Actions Workflows (CI/CD Action versions)
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+          interval: "monthly"
+          day: "monday"
+          time: "03:00"
+          timezone: "Asia/Jakarta"
+      open-pull-requests-limit: 5
+      commit-message:
+          prefix: "chore(actions)"
+          include: "scope"
+      labels:
+          - "dependencies"
+          - "github-actions"
+          - "needs-human-review"
