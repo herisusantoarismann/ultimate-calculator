@@ -7,27 +7,30 @@ import { BMICalculator } from "./BMICalculator";
 import { CalorieCalculator } from "./CalorieCalculator";
 import { HeartPulse, Flame } from "lucide-react";
 
-const HEALTH_TABS: TabPillItem<HealthSubTab>[] = [
-    {
-        id: "bmi",
-        label: "Indeks Massa Tubuh (BMI)",
-        icon: <HeartPulse className="w-4 h-4" />,
-    },
-    {
-        id: "calorie",
-        label: "Kalori Harian (BMR & TDEE)",
-        icon: <Flame className="w-4 h-4" />,
-    },
-];
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const HealthCalculator: React.FC = () => {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<HealthSubTab>("bmi");
+
+    const tabs: TabPillItem<HealthSubTab>[] = [
+        {
+            id: "bmi",
+            label: t.health.tabs.bmi,
+            icon: <HeartPulse className="w-4 h-4" />,
+        },
+        {
+            id: "calorie",
+            label: t.health.tabs.calorie,
+            icon: <Flame className="w-4 h-4" />,
+        },
+    ];
 
     return (
         <div className="space-y-6">
             <div className="flex justify-center">
                 <TabPills
-                    tabs={HEALTH_TABS}
+                    tabs={tabs}
                     activeTab={activeTab}
                     onChange={(tabId) => setActiveTab(tabId)}
                 />

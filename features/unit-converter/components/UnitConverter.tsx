@@ -13,6 +13,7 @@ import {
     LucideIcon,
 } from "lucide-react";
 import { formatNumber } from "@/utils/formatters";
+import { useTranslation } from "@/context/LanguageContext";
 import { clsx } from "clsx";
 
 type UnitCategory = "length" | "weight" | "temperature" | "time";
@@ -20,6 +21,7 @@ type UnitCategory = "length" | "weight" | "temperature" | "time";
 interface UnitOption {
     id: string;
     name: string;
+    nameEn?: string;
     symbol: string;
     toBase: (v: number) => number;
     fromBase: (v: number) => number;
@@ -37,6 +39,7 @@ const UNITS: Record<
             {
                 id: "m",
                 name: "Meter",
+                nameEn: "Meters",
                 symbol: "m",
                 toBase: (v) => v,
                 fromBase: (v) => v,
@@ -44,6 +47,7 @@ const UNITS: Record<
             {
                 id: "km",
                 name: "Kilometer",
+                nameEn: "Kilometers",
                 symbol: "km",
                 toBase: (v) => v * 1000,
                 fromBase: (v) => v / 1000,
@@ -51,6 +55,7 @@ const UNITS: Record<
             {
                 id: "cm",
                 name: "Sentimeter",
+                nameEn: "Centimeters",
                 symbol: "cm",
                 toBase: (v) => v / 100,
                 fromBase: (v) => v * 100,
@@ -58,6 +63,7 @@ const UNITS: Record<
             {
                 id: "mm",
                 name: "Milimeter",
+                nameEn: "Millimeters",
                 symbol: "mm",
                 toBase: (v) => v / 1000,
                 fromBase: (v) => v * 1000,
@@ -65,6 +71,7 @@ const UNITS: Record<
             {
                 id: "mi",
                 name: "Mil (Miles)",
+                nameEn: "Miles",
                 symbol: "mi",
                 toBase: (v) => v * 1609.344,
                 fromBase: (v) => v / 1609.344,
@@ -72,6 +79,7 @@ const UNITS: Record<
             {
                 id: "yd",
                 name: "Yard",
+                nameEn: "Yards",
                 symbol: "yd",
                 toBase: (v) => v * 0.9144,
                 fromBase: (v) => v / 0.9144,
@@ -79,6 +87,7 @@ const UNITS: Record<
             {
                 id: "ft",
                 name: "Kaki (Foot)",
+                nameEn: "Feet",
                 symbol: "ft",
                 toBase: (v) => v * 0.3048,
                 fromBase: (v) => v / 0.3048,
@@ -86,6 +95,7 @@ const UNITS: Record<
             {
                 id: "in",
                 name: "Inci (Inch)",
+                nameEn: "Inches",
                 symbol: "in",
                 toBase: (v) => v * 0.0254,
                 fromBase: (v) => v / 0.0254,
@@ -100,6 +110,7 @@ const UNITS: Record<
             {
                 id: "kg",
                 name: "Kilogram",
+                nameEn: "Kilograms",
                 symbol: "kg",
                 toBase: (v) => v * 1000,
                 fromBase: (v) => v / 1000,
@@ -107,6 +118,7 @@ const UNITS: Record<
             {
                 id: "g",
                 name: "Gram",
+                nameEn: "Grams",
                 symbol: "g",
                 toBase: (v) => v,
                 fromBase: (v) => v,
@@ -114,6 +126,7 @@ const UNITS: Record<
             {
                 id: "mg",
                 name: "Miligram",
+                nameEn: "Milligrams",
                 symbol: "mg",
                 toBase: (v) => v / 1000,
                 fromBase: (v) => v * 1000,
@@ -121,6 +134,7 @@ const UNITS: Record<
             {
                 id: "t",
                 name: "Ton Metrik",
+                nameEn: "Metric Tons",
                 symbol: "t",
                 toBase: (v) => v * 1e6,
                 fromBase: (v) => v / 1e6,
@@ -128,6 +142,7 @@ const UNITS: Record<
             {
                 id: "lb",
                 name: "Pound (lbs)",
+                nameEn: "Pounds (lbs)",
                 symbol: "lb",
                 toBase: (v) => v * 453.59237,
                 fromBase: (v) => v / 453.59237,
@@ -135,6 +150,7 @@ const UNITS: Record<
             {
                 id: "oz",
                 name: "Ons (Ounce)",
+                nameEn: "Ounces",
                 symbol: "oz",
                 toBase: (v) => v * 28.349523,
                 fromBase: (v) => v / 28.349523,
@@ -149,6 +165,7 @@ const UNITS: Record<
             {
                 id: "c",
                 name: "Celsius",
+                nameEn: "Celsius",
                 symbol: "°C",
                 toBase: (v) => v,
                 fromBase: (v) => v,
@@ -156,6 +173,7 @@ const UNITS: Record<
             {
                 id: "f",
                 name: "Fahrenheit",
+                nameEn: "Fahrenheit",
                 symbol: "°F",
                 toBase: (v) => ((v - 32) * 5) / 9,
                 fromBase: (v) => (v * 9) / 5 + 32,
@@ -163,6 +181,7 @@ const UNITS: Record<
             {
                 id: "k",
                 name: "Kelvin",
+                nameEn: "Kelvin",
                 symbol: "K",
                 toBase: (v) => v - 273.15,
                 fromBase: (v) => v + 273.15,
@@ -170,6 +189,7 @@ const UNITS: Record<
             {
                 id: "r",
                 name: "Reamur",
+                nameEn: "Reaumur",
                 symbol: "°R",
                 toBase: (v) => (v * 5) / 4,
                 fromBase: (v) => (v * 4) / 5,
@@ -184,6 +204,7 @@ const UNITS: Record<
             {
                 id: "s",
                 name: "Detik (Second)",
+                nameEn: "Seconds",
                 symbol: "s",
                 toBase: (v) => v,
                 fromBase: (v) => v,
@@ -191,6 +212,7 @@ const UNITS: Record<
             {
                 id: "min",
                 name: "Menit (Minute)",
+                nameEn: "Minutes",
                 symbol: "min",
                 toBase: (v) => v * 60,
                 fromBase: (v) => v / 60,
@@ -198,6 +220,7 @@ const UNITS: Record<
             {
                 id: "hr",
                 name: "Jam (Hour)",
+                nameEn: "Hours",
                 symbol: "h",
                 toBase: (v) => v * 3600,
                 fromBase: (v) => v / 3600,
@@ -205,6 +228,7 @@ const UNITS: Record<
             {
                 id: "day",
                 name: "Hari (Day)",
+                nameEn: "Days",
                 symbol: "d",
                 toBase: (v) => v * 86400,
                 fromBase: (v) => v / 86400,
@@ -212,6 +236,7 @@ const UNITS: Record<
             {
                 id: "week",
                 name: "Minggu (Week)",
+                nameEn: "Weeks",
                 symbol: "wk",
                 toBase: (v) => v * 604800,
                 fromBase: (v) => v / 604800,
@@ -219,6 +244,7 @@ const UNITS: Record<
             {
                 id: "month",
                 name: "Bulan (30 hari)",
+                nameEn: "Months (30 days)",
                 symbol: "mo",
                 toBase: (v) => v * 2592000,
                 fromBase: (v) => v / 2592000,
@@ -226,6 +252,7 @@ const UNITS: Record<
             {
                 id: "year",
                 name: "Tahun (365 hari)",
+                nameEn: "Years (365 days)",
                 symbol: "yr",
                 toBase: (v) => v * 31536000,
                 fromBase: (v) => v / 31536000,
@@ -235,12 +262,24 @@ const UNITS: Record<
 };
 
 export const UnitConverter: React.FC = () => {
+    const { t, locale } = useTranslation();
     const [category, setCategory] = useState<UnitCategory>("length");
     const [inputValue, setInputValue] = useState<number>(1);
     const [fromUnitId, setFromUnitId] = useState<string>("km");
     const [toUnitId, setToUnitId] = useState<string>("m");
 
+    const categoryLabels: Record<UnitCategory, string> = {
+        length: t.converter.categories.length,
+        weight: t.converter.categories.weight,
+        temperature: t.converter.categories.temperature,
+        time: t.converter.categories.time,
+    };
+
+    const getUnitName = (u: UnitOption) =>
+        locale === "en" && u.nameEn ? u.nameEn : u.name;
+
     const currentCategory = UNITS[category];
+    const categoryTitle = categoryLabels[category];
     const fromUnit =
         currentCategory.list.find((u) => u.id === fromUnitId) ||
         currentCategory.list[0];
@@ -297,7 +336,7 @@ export const UnitConverter: React.FC = () => {
                             )}
                         >
                             <Icon className="w-4 h-4" />
-                            <span>{item.label}</span>
+                            <span>{categoryLabels[catKey]}</span>
                         </button>
                     );
                 })}
@@ -307,12 +346,14 @@ export const UnitConverter: React.FC = () => {
             <Card className="p-5 sm:p-7 space-y-6">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800">
                     <h3 className="font-bold text-slate-800 dark:text-white text-base">
-                        Konversi {currentCategory.label}
+                        {locale === "en"
+                            ? `${categoryTitle} Conversion`
+                            : `Konversi ${categoryTitle}`}
                     </h3>
                     <CopyButton
                         textToCopy={`${formatNumber(convertedValue, 6)} ${toUnit.symbol}`}
                         size="sm"
-                        label="Salin Hasil"
+                        label={`${t.common.copy} ${t.converter.output}`}
                     />
                 </div>
 
@@ -322,7 +363,7 @@ export const UnitConverter: React.FC = () => {
                     <div className="md:col-span-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-xs font-semibold text-slate-400">
-                                Dari Satuan
+                                {t.converter.from}
                             </span>
                             <select
                                 value={fromUnit.id}
@@ -335,7 +376,7 @@ export const UnitConverter: React.FC = () => {
                                         value={u.id}
                                         className="dark:bg-slate-900"
                                     >
-                                        {u.name} ({u.symbol})
+                                        {getUnitName(u)} ({u.symbol})
                                     </option>
                                 ))}
                             </select>
@@ -357,7 +398,8 @@ export const UnitConverter: React.FC = () => {
                             type="button"
                             onClick={handleSwap}
                             className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 hover:scale-110 transition-transform calc-btn shadow-sm"
-                            title="Tukar Satuan"
+                            title={t.converter.swap}
+                            aria-label={t.converter.swap}
                         >
                             <ArrowUpDown className="w-4 h-4" />
                         </button>
@@ -367,7 +409,7 @@ export const UnitConverter: React.FC = () => {
                     <div className="md:col-span-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-xs font-semibold text-slate-400">
-                                Ke Satuan
+                                {t.converter.to}
                             </span>
                             <select
                                 value={toUnit.id}
@@ -380,7 +422,7 @@ export const UnitConverter: React.FC = () => {
                                         value={u.id}
                                         className="dark:bg-slate-900"
                                     >
-                                        {u.name} ({u.symbol})
+                                        {getUnitName(u)} ({u.symbol})
                                     </option>
                                 ))}
                             </select>
@@ -410,7 +452,7 @@ export const UnitConverter: React.FC = () => {
                 <div>
                     <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
                         <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                        <span>Semua Satuan Ekuivalen</span>
+                        <span>{t.converter.quickMatrix}</span>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
                         {allConversions.map((item) => (
@@ -425,7 +467,7 @@ export const UnitConverter: React.FC = () => {
                                 )}
                             >
                                 <div className="text-[11px] text-slate-400 truncate">
-                                    {item.name}
+                                    {getUnitName(item)}
                                 </div>
                                 <div className="font-mono font-bold text-sm text-slate-800 dark:text-slate-100 truncate mt-0.5">
                                     {formatNumber(item.converted, 4)}{" "}

@@ -6,57 +6,62 @@ import { CopyButton } from "@/components/molecules/CopyButton";
 import { Flame, Activity } from "lucide-react";
 import { CalorieResult } from "@/types/common";
 import { formatNumber } from "@/utils/formatters";
+import { useTranslation } from "@/context/LanguageContext";
 import { clsx } from "clsx";
 
-const ACTIVITY_LEVELS = [
-    {
-        id: "sedentary",
-        label: "Sedentari (Jarang / Tidak Olahraga)",
-        multiplier: 1.2,
-    },
-    {
-        id: "light",
-        label: "Ringan (Olahraga 1 - 3 hari/minggu)",
-        multiplier: 1.375,
-    },
-    {
-        id: "moderate",
-        label: "Moderat (Olahraga 3 - 5 hari/minggu)",
-        multiplier: 1.55,
-    },
-    {
-        id: "heavy",
-        label: "Aktif (Olahraga intensif 6 - 7 hari/minggu)",
-        multiplier: 1.725,
-    },
-    {
-        id: "athlete",
-        label: "Sangat Aktif (Atlet / Latihan 2x sehari)",
-        multiplier: 1.9,
-    },
-];
-
-const GENDER_OPTIONS = [
-    {
-        value: "male" as const,
-        label: "👨 Laki-Laki",
-        activeClass:
-            "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20",
-    },
-    {
-        value: "female" as const,
-        label: "👩 Perempuan",
-        activeClass:
-            "bg-pink-600 text-white border-pink-600 shadow-md shadow-pink-500/20",
-    },
-];
-
 export const CalorieCalculator: React.FC = () => {
+    const { t, locale } = useTranslation();
     const [gender, setGender] = useState<"male" | "female">("male");
     const [age, setAge] = useState<number>(26);
     const [weight, setWeight] = useState<number>(70); // kg
     const [height, setHeight] = useState<number>(175); // cm
     const [activityId, setActivityId] = useState<string>("moderate");
+
+    const activityLevels = useMemo(
+        () => [
+            {
+                id: "sedentary",
+                label: t.health.calorie.sedentary,
+                multiplier: 1.2,
+            },
+            {
+                id: "light",
+                label: t.health.calorie.light,
+                multiplier: 1.375,
+            },
+            {
+                id: "moderate",
+                label: t.health.calorie.moderate,
+                multiplier: 1.55,
+            },
+            {
+                id: "heavy",
+                label: t.health.calorie.heavy,
+                multiplier: 1.725,
+            },
+            {
+                id: "athlete",
+                label: t.health.calorie.athlete,
+                multiplier: 1.9,
+            },
+        ],
+        [t],
+    );
+
+    const genderOptions = [
+        {
+            value: "male" as const,
+            label: t.health.bmi.male,
+            activeClass:
+                "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20",
+        },
+        {
+            value: "female" as const,
+            label: t.health.bmi.female,
+            activeClass:
+                "bg-pink-600 text-white border-pink-600 shadow-md shadow-pink-500/20",
+        },
+    ];
 
     const results: CalorieResult = useMemo(() => {
         // Mifflin-St Jeor Equation
@@ -68,8 +73,8 @@ export const CalorieCalculator: React.FC = () => {
         }
 
         const currentActivity =
-            ACTIVITY_LEVELS.find((a) => a.id === activityId) ||
-            ACTIVITY_LEVELS[2];
+            activityLevels.find((a) => a.id === activityId) ||
+            activityLevels[2];
         const tdee = bmr * currentActivity.multiplier;
 
         return {
@@ -80,7 +85,7 @@ export const CalorieCalculator: React.FC = () => {
             maintenance: Math.round(tdee),
             surplusModerate: Math.round(tdee + 500),
         };
-    }, [gender, age, weight, height, activityId]);
+    }, [gender, age, weight, height, activityId, activityLevels]);
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-4xl mx-auto">
@@ -89,17 +94,17 @@ export const CalorieCalculator: React.FC = () => {
                 <div className="flex items-center gap-2 pb-3 border-b border-slate-200/80 dark:border-slate-800">
                     <Flame className="w-5 h-5 text-orange-500" />
                     <h3 className="font-bold text-slate-800 dark:text-white text-base">
-                        Profil & Tingkat Aktivitas
+                        {t.health.calorie.paramsTitle}
                     </h3>
                 </div>
 
                 {/* Gender Selection */}
                 <div>
                     <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                        Jenis Kelamin
+                        {t.health.bmi.gender}
                     </label>
                     <div className="grid grid-cols-2 gap-3">
-                        {GENDER_OPTIONS.map((opt) => (
+                        {genderOptions.map((opt) => (
                             <button
                                 key={opt.value}
                                 type="button"
@@ -121,7 +126,7 @@ export const CalorieCalculator: React.FC = () => {
                 <div className="grid grid-cols-3 gap-3">
                     <div>
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                            Usia
+                            {t.health.calorie.age}
                         </label>
                         <input
                             type="number"
@@ -135,7 +140,7 @@ export const CalorieCalculator: React.FC = () => {
 
                     <div>
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                            Berat (kg)
+                            {t.health.bmi.weight}
                         </label>
                         <input
                             type="number"
@@ -149,7 +154,7 @@ export const CalorieCalculator: React.FC = () => {
 
                     <div>
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                            Tinggi (cm)
+                            {t.health.bmi.height}
                         </label>
                         <input
                             type="number"
@@ -165,10 +170,10 @@ export const CalorieCalculator: React.FC = () => {
                 {/* Tingkat Aktivitas */}
                 <div>
                     <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                        Tingkat Aktivitas Harian
+                        {t.health.calorie.activityLevel}
                     </label>
                     <div className="space-y-1.5">
-                        {ACTIVITY_LEVELS.map((act) => (
+                        {activityLevels.map((act) => (
                             <label
                                 key={act.id}
                                 className={clsx(
@@ -197,10 +202,10 @@ export const CalorieCalculator: React.FC = () => {
                 <div>
                     <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800 mb-4">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                            Kebutuhan Kalori Harian
+                            {t.health.calorie.tdeeTitle}
                         </span>
                         <CopyButton
-                            textToCopy={`TDEE: ${results.tdee} kcal/hari`}
+                            textToCopy={`TDEE: ${results.tdee} kcal/${locale === "en" ? "day" : "hari"}`}
                             size="sm"
                         />
                     </div>
@@ -209,16 +214,16 @@ export const CalorieCalculator: React.FC = () => {
                     <div className="mb-5">
                         <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mb-1">
                             <Activity className="w-3.5 h-3.5 text-orange-500" />
-                            <span>Total Pengeluaran Energi Harian (TDEE)</span>
+                            <span>{t.health.calorie.tdeeResult}</span>
                         </div>
                         <div className="text-3xl sm:text-4xl font-extrabold text-orange-600 dark:text-orange-400 font-mono tracking-tight">
                             {formatNumber(results.tdee)}{" "}
                             <span className="text-lg font-sans font-medium text-slate-500">
-                                kcal/hari
+                                kcal/{locale === "en" ? "day" : "hari"}
                             </span>
                         </div>
                         <p className="text-xs text-slate-400 mt-1">
-                            BMR (Metabolisme Dasar Istirahat):{" "}
+                            {t.health.calorie.bmrResult}:{" "}
                             <span className="font-mono font-bold text-slate-600 dark:text-slate-300">
                                 {formatNumber(results.bmr)} kcal
                             </span>
@@ -230,51 +235,55 @@ export const CalorieCalculator: React.FC = () => {
                         <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/60">
                             <div className="flex items-center justify-between text-xs">
                                 <span className="font-semibold text-emerald-800 dark:text-emerald-300">
-                                    🎯 Pemeliharaan (Maintenance)
+                                    🎯 {t.health.calorie.maintenance}
                                 </span>
                                 <span className="font-bold font-mono text-emerald-700 dark:text-emerald-400 text-sm">
                                     {formatNumber(results.maintenance)} kcal
                                 </span>
                             </div>
                             <p className="text-[11px] text-emerald-600/80 dark:text-emerald-400/80 mt-0.5">
-                                Konsumsi ini untuk menjaga bobot tubuh stabil.
+                                {locale === "en"
+                                    ? "Consume this amount to maintain current body weight."
+                                    : "Konsumsi ini untuk menjaga bobot tubuh stabil."}
                             </p>
                         </div>
 
                         <div className="p-3 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200/60 dark:border-sky-800/60">
                             <div className="flex items-center justify-between text-xs">
                                 <span className="font-semibold text-sky-800 dark:text-sky-300">
-                                    📉 Turun Berat Badan (-0.5 kg/mgg)
+                                    📉 {t.health.calorie.cutting} (-0.5 kg/
+                                    {locale === "en" ? "wk" : "mgg"})
                                 </span>
                                 <span className="font-bold font-mono text-sky-700 dark:text-sky-400 text-sm">
                                     {formatNumber(results.deficitModerate)} kcal
                                 </span>
                             </div>
                             <p className="text-[11px] text-sky-600/80 dark:text-sky-400/80 mt-0.5">
-                                Defisit moderat yang aman & tidak menyebabkan
-                                penurunan massa otot.
+                                {t.health.calorie.deficitNote}
                             </p>
                         </div>
 
                         <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/60">
                             <div className="flex items-center justify-between text-xs">
                                 <span className="font-semibold text-amber-800 dark:text-amber-300">
-                                    💪 Naik Berat / Otot (+0.5 kg/mgg)
+                                    💪 {t.health.calorie.bulking} (+0.5 kg/
+                                    {locale === "en" ? "wk" : "mgg"})
                                 </span>
                                 <span className="font-bold font-mono text-amber-700 dark:text-amber-400 text-sm">
                                     {formatNumber(results.surplusModerate)} kcal
                                 </span>
                             </div>
                             <p className="text-[11px] text-amber-600/80 dark:text-amber-400/80 mt-0.5">
-                                Surplus kalori untuk pembentukan massa otot
-                                (lean bulking).
+                                {t.health.calorie.surplusNote}
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div className="text-[11px] text-slate-400 text-center">
-                    Menggunakan formula klinis terpercaya{" "}
+                    {locale === "en"
+                        ? "Calculated with the clinical standard"
+                        : "Menggunakan formula klinis terpercaya"}{" "}
                     <span className="font-semibold">Mifflin-St Jeor</span>
                 </div>
             </Card>

@@ -5,9 +5,11 @@ import { Card } from "@/components/atoms/Card";
 import { CopyButton } from "@/components/molecules/CopyButton";
 import { formatCurrency } from "@/utils/formatters";
 import { Landmark, Percent, ChevronDown, ChevronUp } from "lucide-react";
+import { useTranslation } from "@/context/LanguageContext";
 import { clsx } from "clsx";
 
 export const LoanCalculator: React.FC = () => {
+    const { t, locale } = useTranslation();
     const [loanAmount, setLoanAmount] = useState<number>(250000000); // 250 Jt
     const [interestRate, setInterestRate] = useState<number>(7.5); // 7.5%
     const [tenureYears, setTenureYears] = useState<number>(15); // 15 Tahun
@@ -122,7 +124,7 @@ export const LoanCalculator: React.FC = () => {
                         <div className="flex items-center gap-2">
                             <Landmark className="w-5 h-5 text-indigo-500" />
                             <h3 className="font-bold text-slate-800 dark:text-white text-base">
-                                Parameter Pinjaman
+                                {t.financial.mortgage.paramsTitle}
                             </h3>
                         </div>
                         <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200/80 dark:border-slate-700">
@@ -136,7 +138,7 @@ export const LoanCalculator: React.FC = () => {
                                         : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200",
                                 )}
                             >
-                                Anuitas / KPR
+                                {t.financial.mortgage.annuity}
                             </button>
                             <button
                                 type="button"
@@ -148,7 +150,7 @@ export const LoanCalculator: React.FC = () => {
                                         : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200",
                                 )}
                             >
-                                Bunga Flat
+                                {t.financial.mortgage.flat}
                             </button>
                         </div>
                     </div>
@@ -157,7 +159,7 @@ export const LoanCalculator: React.FC = () => {
                     <div>
                         <div className="flex items-center justify-between mb-1.5">
                             <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                Plafon Pinjaman (Pokok)
+                                {t.financial.mortgage.principalLabel}
                             </label>
                             <span className="text-xs font-mono font-medium text-indigo-600 dark:text-indigo-400">
                                 {formatCurrency(loanAmount, "IDR")}
@@ -199,7 +201,7 @@ export const LoanCalculator: React.FC = () => {
                         <div>
                             <div className="flex items-center justify-between mb-1.5">
                                 <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                    Suku Bunga (% per tahun)
+                                    {t.financial.mortgage.interestRate}
                                 </label>
                                 <span className="text-xs font-mono font-medium text-slate-500">
                                     {interestRate}%
@@ -236,10 +238,12 @@ export const LoanCalculator: React.FC = () => {
                         <div>
                             <div className="flex items-center justify-between mb-1.5">
                                 <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                    Jangka Waktu (Tenor)
+                                    {t.financial.mortgage.loanTerm}
                                 </label>
                                 <span className="text-xs font-mono font-medium text-slate-500">
-                                    {tenureYears} Tahun ({tenureYears * 12} Bln)
+                                    {tenureYears} {t.financial.mortgage.years} (
+                                    {tenureYears * 12}{" "}
+                                    {t.financial.mortgage.months})
                                 </span>
                             </div>
                             <div className="relative">
@@ -256,7 +260,7 @@ export const LoanCalculator: React.FC = () => {
                                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-sm sm:text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all"
                                 />
                                 <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400">
-                                    Tahun
+                                    {t.financial.mortgage.years}
                                 </span>
                             </div>
                             <input
@@ -278,28 +282,31 @@ export const LoanCalculator: React.FC = () => {
                     <div>
                         <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800 mb-4">
                             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                                Estimasi Cicilan
+                                {t.financial.mortgage.estimatedInstallment}
                             </span>
                             <CopyButton
-                                textToCopy={`${formatCurrency(results.monthlyPayment, "IDR")} / bulan`}
+                                textToCopy={`${formatCurrency(results.monthlyPayment, "IDR")} / ${t.financial.mortgage.months.toLowerCase()}`}
                                 size="sm"
-                                label="Salin Cicilan"
+                                label={t.common.copy}
                             />
                         </div>
 
                         {/* Cicilan Bulanan Big Highlight */}
                         <div className="mb-6">
                             <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                                Angsuran per Bulan
+                                {t.financial.mortgage.monthlyPayment}
                             </p>
                             <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono tracking-tight">
                                 {formatCurrency(results.monthlyPayment, "IDR")}
                             </div>
                             <p className="text-[11px] text-slate-400 mt-1">
-                                Metode:{" "}
                                 {interestType === "annuity"
-                                    ? "Bunga Efektif/Anuitas"
-                                    : "Bunga Flat Tetap"}
+                                    ? locale === "en"
+                                        ? "Effective / Annuity Interest"
+                                        : "Bunga Efektif/Anuitas"
+                                    : locale === "en"
+                                      ? "Fixed Flat Interest"
+                                      : "Bunga Flat Tetap"}
                             </p>
                         </div>
 
@@ -308,7 +315,7 @@ export const LoanCalculator: React.FC = () => {
                             <div className="flex justify-between text-xs">
                                 <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
                                     <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-                                    Pokok Pinjaman:
+                                    {t.financial.mortgage.principalCol}:
                                 </span>
                                 <span className="font-semibold font-mono text-slate-800 dark:text-slate-200">
                                     {formatCurrency(loanAmount, "IDR")}
@@ -318,7 +325,7 @@ export const LoanCalculator: React.FC = () => {
                             <div className="flex justify-between text-xs">
                                 <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
                                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                                    Total Bunga:
+                                    {t.financial.mortgage.totalInterest}:
                                 </span>
                                 <span className="font-semibold font-mono text-amber-600 dark:text-amber-400">
                                     {formatCurrency(
@@ -334,20 +341,20 @@ export const LoanCalculator: React.FC = () => {
                                     style={{
                                         width: `${results.principalRatio}%`,
                                     }}
-                                    title={`Pokok: ${results.principalRatio.toFixed(1)}%`}
+                                    title={`${locale === "en" ? "Principal" : "Pokok"}: ${results.principalRatio.toFixed(1)}%`}
                                 />
                                 <div
                                     className="bg-amber-500 h-full transition-all duration-500"
                                     style={{
                                         width: `${results.interestRatio}%`,
                                     }}
-                                    title={`Bunga: ${results.interestRatio.toFixed(1)}%`}
+                                    title={`${locale === "en" ? "Interest" : "Bunga"}: ${results.interestRatio.toFixed(1)}%`}
                                 />
                             </div>
 
                             <div className="flex justify-between text-xs pt-2 border-t border-slate-200/60 dark:border-slate-800/80">
                                 <span className="font-bold text-slate-700 dark:text-slate-300">
-                                    Total Pembayaran:
+                                    {t.financial.mortgage.totalPayment}:
                                 </span>
                                 <span className="font-bold font-mono text-slate-900 dark:text-white">
                                     {formatCurrency(
@@ -368,8 +375,8 @@ export const LoanCalculator: React.FC = () => {
                         >
                             <span>
                                 {showSchedule
-                                    ? "Sembunyikan Jadwal Amortisasi"
-                                    : "Lihat Simulasi Jadwal Tahunan"}
+                                    ? t.financial.mortgage.hideSchedule
+                                    : t.financial.mortgage.showSchedule}
                             </span>
                             {showSchedule ? (
                                 <ChevronUp className="w-4 h-4" />
@@ -386,10 +393,10 @@ export const LoanCalculator: React.FC = () => {
                 <Card className="p-5 sm:p-6 overflow-hidden animate-in fade-in duration-300">
                     <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800 mb-4">
                         <h4 className="font-bold text-slate-800 dark:text-white text-sm">
-                            Simulasi Amortisasi Tahunan
+                            {t.financial.mortgage.amortizationSchedule}
                         </h4>
                         <span className="text-xs text-slate-400">
-                            Total {tenureYears} Tahun
+                            Total {tenureYears} {t.financial.mortgage.years}
                         </span>
                     </div>
                     <div className="overflow-x-auto max-h-72">
@@ -397,12 +404,16 @@ export const LoanCalculator: React.FC = () => {
                             <thead className="sticky top-0 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400">
                                 <tr>
                                     <th className="p-2.5 rounded-l-lg">
-                                        Tahun
+                                        {t.financial.mortgage.yearCol}
                                     </th>
-                                    <th className="p-2.5">Pokok Terbayar</th>
-                                    <th className="p-2.5">Bunga Terbayar</th>
+                                    <th className="p-2.5">
+                                        {t.financial.mortgage.principalCol}
+                                    </th>
+                                    <th className="p-2.5">
+                                        {t.financial.mortgage.interestCol}
+                                    </th>
                                     <th className="p-2.5 rounded-r-lg">
-                                        Sisa Pinjaman
+                                        {t.financial.mortgage.balanceCol}
                                     </th>
                                 </tr>
                             </thead>
@@ -413,7 +424,9 @@ export const LoanCalculator: React.FC = () => {
                                         className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50"
                                     >
                                         <td className="p-2.5 font-sans font-medium text-slate-700 dark:text-slate-300">
-                                            Tahun ke-{row.year}
+                                            {locale === "en"
+                                                ? `Year ${row.year}`
+                                                : `Tahun ke-${row.year}`}
                                         </td>
                                         <td className="p-2.5 text-indigo-600 dark:text-indigo-400">
                                             {formatCurrency(

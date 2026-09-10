@@ -36,13 +36,21 @@ export function formatNumber(val: number, maxDecimals: number = 4): string {
     }).format(val);
 }
 
-export function formatDateIndo(date: Date): string {
-    return new Intl.DateTimeFormat("id-ID", {
+export function formatDateLocale(
+    date: Date,
+    locale: "id" | "en" = "id",
+): string {
+    const intlLocale = locale === "en" ? "en-US" : "id-ID";
+    return new Intl.DateTimeFormat(intlLocale, {
         weekday: "long",
         year: "numeric",
         month: "long",
         day: "numeric",
     }).format(date);
+}
+
+export function formatDateIndo(date: Date): string {
+    return formatDateLocale(date, "id");
 }
 
 export function calculateDateDiff(

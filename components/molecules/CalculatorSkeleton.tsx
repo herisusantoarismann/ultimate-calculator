@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import { Card } from "@/components/atoms/Card";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export interface CalculatorSkeletonProps {
     className?: string;
@@ -12,11 +15,17 @@ export interface CalculatorSkeletonProps {
 export const CalculatorSkeleton: React.FC<CalculatorSkeletonProps> = ({
     className = "max-w-md mx-auto",
 }) => {
+    const { locale } = useTranslation();
+
     return (
         <div
             className={className}
             role="status"
-            aria-label="Memuat kalkulator..."
+            aria-label={
+                locale === "en"
+                    ? "Loading calculator..."
+                    : "Memuat kalkulator..."
+            }
         >
             <Card className="p-4 sm:p-6 animate-pulse space-y-4">
                 {/* Header bar skeleton */}

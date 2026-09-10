@@ -6,6 +6,7 @@ import { CopyButton } from "@/components/molecules/CopyButton";
 import { ArrowUpDown, RefreshCw, CheckCircle2, TrendingUp } from "lucide-react";
 import { formatNumber } from "@/utils/formatters";
 import { logErrorToSentry } from "@/lib/sentry";
+import { useTranslation } from "@/context/LanguageContext";
 import { clsx } from "clsx";
 
 interface Currency {
@@ -78,6 +79,7 @@ const DEFAULT_CURRENCIES: Currency[] = [
 ];
 
 export const CurrencyConverter: React.FC = () => {
+    const { t, locale } = useTranslation();
     const [currencies, setCurrencies] =
         useState<Currency[]>(DEFAULT_CURRENCIES);
     const [fromCode, setFromCode] = useState("USD");
@@ -85,7 +87,7 @@ export const CurrencyConverter: React.FC = () => {
     const [amount, setAmount] = useState<number>(100);
     const [isLoading, setIsLoading] = useState(false);
     const [lastUpdated, setLastUpdated] = useState<string>(
-        "Kurs Standar Terbaru",
+        t.financial.currency.ratesLive,
     );
 
     const fromCurrency =
@@ -199,7 +201,7 @@ export const CurrencyConverter: React.FC = () => {
                     <div className="flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-indigo-500" />
                         <h3 className="font-bold text-slate-800 dark:text-white text-base">
-                            Konversi Mata Uang
+                            {t.financial.currency.paramsTitle}
                         </h3>
                     </div>
                     <button
@@ -215,7 +217,11 @@ export const CurrencyConverter: React.FC = () => {
                             )}
                         />
                         <span>
-                            {isLoading ? "Memperbarui..." : "Update Kurs"}
+                            {isLoading
+                                ? t.common.loading
+                                : locale === "en"
+                                  ? "Update Rates"
+                                  : "Update Kurs"}
                         </span>
                     </button>
                 </div>
@@ -226,7 +232,7 @@ export const CurrencyConverter: React.FC = () => {
                     <div className="md:col-span-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-xs font-semibold text-slate-400">
-                                Dari Mata Uang
+                                {t.financial.currency.from}
                             </span>
                             <select
                                 value={fromCode}
@@ -267,7 +273,8 @@ export const CurrencyConverter: React.FC = () => {
                             type="button"
                             onClick={handleSwap}
                             className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 hover:scale-110 transition-transform calc-btn shadow-sm"
-                            title="Tukar mata uang"
+                            title={t.financial.currency.swap}
+                            aria-label={t.financial.currency.swap}
                         >
                             <ArrowUpDown className="w-4 h-4" />
                         </button>
@@ -277,7 +284,7 @@ export const CurrencyConverter: React.FC = () => {
                     <div className="md:col-span-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-xs font-semibold text-slate-400">
-                                Ke Mata Uang
+                                {t.financial.currency.to}
                             </span>
                             <select
                                 value={toCode}
@@ -310,7 +317,7 @@ export const CurrencyConverter: React.FC = () => {
                 <div className="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div>
                         <div className="text-xs text-slate-500 dark:text-slate-400">
-                            Hasil Konversi:
+                            {t.financial.currency.convertedResult}:
                         </div>
                         <div className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white font-mono">
                             {fromCurrency.symbol} {formatNumber(amount, 2)} ={" "}
@@ -320,7 +327,7 @@ export const CurrencyConverter: React.FC = () => {
                     </div>
                     <CopyButton
                         textToCopy={`${toCurrency.symbol} ${formatNumber(convertedAmount, 2)}`}
-                        label="Salin Hasil"
+                        label={`${t.common.copy} ${t.financial.currency.convertedResult}`}
                         size="md"
                     />
                 </div>
@@ -352,7 +359,7 @@ export const CurrencyConverter: React.FC = () => {
                 {/* Quick Pair Buttons */}
                 <div>
                     <div className="text-xs font-semibold text-slate-400 mb-2">
-                        Pasangan Populer:
+                        {t.financial.currency.popularPairs}:
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {quickPairs.map((pair) => (

@@ -156,3 +156,18 @@ Pengujian otomatis end-to-end dijalankan menggunakan **Playwright** (`npm run te
 | **TC-E2E-006** | Zero Unhandled Console Errors               | Pantau console errors selama interaksi pengguna di seluruh page | Nol runtime JavaScript exceptions atau console errors tak tertangani.                                               |
 | **TC-E2E-007** | Live Region Screen Reader                   | Evaluasi ekspresi `10 + 5 =`                                    | Elemen dengan atribut `aria-live="polite"` dan `role="status"` memuat nilai `15` secara real-time.                  |
 | **TC-E2E-008** | Verifikasi Core Web Vitals & Skeleton State | Alihkan tab kalkulator di bawah koneksi jaringan normal         | `CalculatorSkeleton` muncul sesaat tanpa layout shift, modul ter-render mulus.                                      |
+
+---
+
+## 9. Uji Internasionalisasi & Dwibahasa (TC-I18N)
+
+Pengujian fitur dwibahasa (**Bahasa Indonesia `id`** & **English `en`**) mencakup unit testing keselarasan kamus (`tests/i18n.test.tsx`) dan pengujian otomasi browser E2E (`e2e/i18n.spec.ts`):
+
+| ID Test         | Skenario Pengujian                            | Langkah Pengujian / Input                                         | Hasil yang Diharapkan (Expected Result)                                                                                   |
+| :-------------- | :-------------------------------------------- | :---------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| **TC-I18N-001** | Bahasa Default & Atribut Root HTML            | Buka landing page aplikasi tanpa preferensi tersimpan di storage  | Halaman memuat antarmuka Bahasa Indonesia, atribut `<html lang="id">` aktif, tombol toggle menampilkan label `ID`.        |
+| **TC-I18N-002** | Keselarasan Kunci Kamus (Strict Key Parity)   | Jalankan unit test rekursif perbandingan `locales/id` & `en`      | 100% kunci kamus identik tanpa ada string yang hilang, tipe `string`, dan tidak ada nilai kosong (_empty string_).        |
+| **TC-I18N-003** | Alih Bahasa Dinamis via `LanguageToggle`      | Klik tombol pengalih bahasa di Header                             | Teks UI (Header, Sidebar, banner, tab) langsung beralih ke Bahasa Inggris (`en`), atribut HTML terupdate ke `lang="en"`.  |
+| **TC-I18N-004** | Persistensi Pilihan Bahasa di Browser         | Beralih ke Bahasa Inggris, lalu muat ulang halaman (`F5`)         | Pengaturan tersimpan di `localStorage.getItem("calc-language") === "en"`, halaman tetap dalam bahasa Inggris saat reload. |
+| **TC-I18N-005** | Aksesibilitas Tombol Pengalih Bahasa (a11y)   | Periksa elemen tombol pengalih bahasa                             | Memiliki `aria-label` dwibahasa yang deskriptif ("Ganti bahasa ke English" / "Switch language to Bahasa Indonesia").      |
+| **TC-I18N-006** | Cakupan Terjemahan Global (Full App Coverage) | Beralih antar modul kalkulator (Financial, Health, DateTime, dll) | Seluruh tab sub-kalkulator, label form, kartu hasil, pesan error, dan catatan kaki footer terjemahkan secara kontekstual. |

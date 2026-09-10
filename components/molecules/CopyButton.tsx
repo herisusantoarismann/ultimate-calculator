@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { clsx } from "clsx";
 import { Button } from "@/components/atoms/Button";
+import { useTranslation } from "@/context/LanguageContext";
 
 export interface CopyButtonProps {
     /** The text string to copy to clipboard */
@@ -20,11 +21,13 @@ export interface CopyButtonProps {
  */
 export const CopyButton: React.FC<CopyButtonProps> = ({
     textToCopy,
-    label = "Salin",
+    label,
     className,
     size = "md",
 }) => {
+    const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
+    const displayLabel = label ?? t.common.copy;
 
     const handleCopy = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -60,10 +63,10 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
             onClick={handleCopy}
             aria-label={
                 copied
-                    ? "Tersalin ke papan klip"
+                    ? t.common.copiedToClipboard
                     : label
-                      ? `Salin ${label}`
-                      : "Salin ke papan klip"
+                      ? `${t.common.copy} ${label}`
+                      : t.common.copyToClipboard
             }
             className={clsx(
                 copied &&
@@ -78,7 +81,7 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
                 )
             }
         >
-            <span>{copied ? "Tersalin!" : label}</span>
+            <span>{copied ? t.common.copied : displayLabel}</span>
         </Button>
     );
 };

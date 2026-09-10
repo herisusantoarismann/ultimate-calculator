@@ -3,8 +3,10 @@
 import React from "react";
 import { Menu, Sparkles, Calculator } from "lucide-react";
 import { ThemeToggle } from "@/components/molecules/ThemeToggle";
+import { LanguageToggle } from "@/components/molecules/LanguageToggle";
 import { Badge } from "@/components/atoms/Badge";
 import { IconButton } from "@/components/atoms/IconButton";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export interface HeaderProps {
     onToggleSidebar: () => void;
@@ -13,12 +15,14 @@ export interface HeaderProps {
 
 /**
  * Organism Header component orchestrating top brand presentation,
- * active category breadcrumb, theme toggle, and mobile menu trigger.
+ * active category breadcrumb, language toggle, theme toggle, and mobile menu trigger.
  */
 export const Header: React.FC<HeaderProps> = ({
     onToggleSidebar,
     activeCategoryName,
 }) => {
+    const { t } = useTranslation();
+
     return (
         <header className="sticky top-0 z-30 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-950/75 backdrop-blur-xl transition-colors">
             <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
@@ -26,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="flex items-center gap-3">
                     <IconButton
                         className="lg:hidden"
-                        aria-label="Buka menu navigasi"
+                        aria-label={t.nav.openMenu}
                         onClick={onToggleSidebar}
                         icon={<Menu className="w-5 h-5" />}
                     />
@@ -38,14 +42,14 @@ export const Header: React.FC<HeaderProps> = ({
                         <div>
                             <div className="flex items-center gap-1.5">
                                 <span className="font-bold text-base sm:text-lg tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                                    Ultimate Calc
+                                    {t.common.brand}
                                 </span>
                                 <Badge
                                     variant="primary"
                                     className="hidden sm:inline-flex"
                                 >
                                     <Sparkles className="w-2.5 h-2.5 mr-1" />{" "}
-                                    Pro Web
+                                    {t.common.proWeb}
                                 </Badge>
                             </div>
                             <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
@@ -62,6 +66,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                 {/* Right: Actions & Theme Toggle */}
                 <div className="flex items-center gap-2 sm:gap-3">
+                    <LanguageToggle />
                     <ThemeToggle />
                 </div>
             </div>

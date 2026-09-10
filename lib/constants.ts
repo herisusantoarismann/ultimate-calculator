@@ -6,6 +6,7 @@ import { NavCategoryItem } from "@/types/common";
 export const STORAGE_KEYS = {
     THEME: "calc-theme",
     STANDARD_HISTORY: "calc-standard-history",
+    LANGUAGE: "calc-language",
 } as const;
 
 /**

@@ -5,9 +5,11 @@ import { Card } from "@/components/atoms/Card";
 import { CopyButton } from "@/components/molecules/CopyButton";
 import { formatCurrency } from "@/utils/formatters";
 import { Tag, Receipt, Percent, ShieldCheck, Sparkles } from "lucide-react";
+import { useTranslation } from "@/context/LanguageContext";
 import { clsx } from "clsx";
 
 export const TaxDiscountCalculator: React.FC = () => {
+    const { t, locale } = useTranslation();
     const [originalPrice, setOriginalPrice] = useState<number>(500000); // Rp 500.000
     const [discountPercent, setDiscountPercent] = useState<number>(20); // 20%
     const [extraDiscountPercent, setExtraDiscountPercent] = useState<number>(0); // e.g. +10%
@@ -62,14 +64,14 @@ export const TaxDiscountCalculator: React.FC = () => {
                 <div className="flex items-center gap-2 pb-3 border-b border-slate-200/80 dark:border-slate-800">
                     <Tag className="w-5 h-5 text-indigo-500" />
                     <h3 className="font-bold text-slate-800 dark:text-white text-base">
-                        Parameter Harga & Diskon
+                        {t.financial.discount.paramsTitle}
                     </h3>
                 </div>
 
                 {/* Harga Asli */}
                 <div>
                     <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                        Harga Awal (Sebelum Diskon)
+                        {t.financial.discount.originalPrice}
                     </label>
                     <div className="relative">
                         <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">
@@ -92,7 +94,7 @@ export const TaxDiscountCalculator: React.FC = () => {
                 <div>
                     <div className="flex items-center justify-between mb-1.5">
                         <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-                            Diskon Utama (%)
+                            {t.financial.discount.mainDiscount}
                         </label>
                         <span className="text-xs font-mono font-medium text-indigo-600 dark:text-indigo-400">
                             {discountPercent}%
@@ -131,10 +133,10 @@ export const TaxDiscountCalculator: React.FC = () => {
                     <div>
                         <div className="flex items-center justify-between mb-1.5">
                             <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                Diskon Tambahan (+%)
+                                {t.financial.discount.extraDiscount}
                             </label>
                             <span className="text-xs font-mono text-slate-400">
-                                Opsional
+                                {locale === "en" ? "Optional" : "Opsional"}
                             </span>
                         </div>
                         <div className="relative">
@@ -148,7 +150,9 @@ export const TaxDiscountCalculator: React.FC = () => {
                                 }
                                 min="0"
                                 max="100"
-                                placeholder="Contoh: 10"
+                                placeholder={
+                                    locale === "en" ? "e.g. 10" : "Contoh: 10"
+                                }
                                 className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-sm sm:text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                             />
                             <Percent className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
@@ -159,7 +163,7 @@ export const TaxDiscountCalculator: React.FC = () => {
                     <div>
                         <div className="flex items-center justify-between mb-1.5">
                             <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                                <span>Pajak (PPN)</span>
+                                <span>{t.financial.discount.applyTax}</span>
                                 <input
                                     type="checkbox"
                                     checked={enableTax}
@@ -170,7 +174,11 @@ export const TaxDiscountCalculator: React.FC = () => {
                                 />
                             </label>
                             <span className="text-xs font-mono text-slate-400">
-                                {enableTax ? `${taxPercent}%` : "Non-aktif"}
+                                {enableTax
+                                    ? `${taxPercent}%`
+                                    : locale === "en"
+                                      ? "Disabled"
+                                      : "Non-aktif"}
                             </span>
                         </div>
                         <div className="relative">
@@ -203,7 +211,7 @@ export const TaxDiscountCalculator: React.FC = () => {
                         <div className="flex items-center gap-2">
                             <Receipt className="w-4 h-4 text-emerald-500" />
                             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                                Struk Ringkasan
+                                {t.financial.discount.receiptTitle}
                             </span>
                         </div>
                         <CopyButton
@@ -212,21 +220,22 @@ export const TaxDiscountCalculator: React.FC = () => {
                                 "IDR",
                             )}
                             size="sm"
-                            label="Salin Total"
+                            label={t.common.copy}
                         />
                     </div>
 
                     {/* Final Price Highlight */}
                     <div className="mb-6">
                         <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                            Harga Akhir yang Dibayar
+                            {t.financial.discount.finalPrice}
                         </p>
                         <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono tracking-tight">
                             {formatCurrency(results.finalPrice, "IDR")}
                         </div>
                         <div className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
                             <Sparkles className="w-3.5 h-3.5" />
-                            Hemat {formatCurrency(results.totalSaved, "IDR")} (
+                            {t.financial.discount.savings}{" "}
+                            {formatCurrency(results.totalSaved, "IDR")} (
                             {results.effectiveDiscountPercent.toFixed(1)}%)
                         </div>
                     </div>
@@ -234,14 +243,19 @@ export const TaxDiscountCalculator: React.FC = () => {
                     {/* Itemized Receipt breakdown */}
                     <div className="space-y-2.5 p-3.5 rounded-2xl bg-white/60 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800 text-xs">
                         <div className="flex justify-between">
-                            <span className="text-slate-500">Harga Asal:</span>
+                            <span className="text-slate-500">
+                                {t.financial.discount.originalPrice}:
+                            </span>
                             <span className="font-mono font-medium text-slate-800 dark:text-slate-200 line-through">
                                 {formatCurrency(results.price, "IDR")}
                             </span>
                         </div>
 
                         <div className="flex justify-between text-rose-600 dark:text-rose-400">
-                            <span>Potongan Diskon ({discountPercent}%):</span>
+                            <span>
+                                {t.financial.discount.mainDiscount} (
+                                {discountPercent}%):
+                            </span>
                             <span className="font-mono font-medium">
                                 -{" "}
                                 {formatCurrency(
@@ -254,7 +268,8 @@ export const TaxDiscountCalculator: React.FC = () => {
                         {extraDiscountPercent > 0 && (
                             <div className="flex justify-between text-rose-600 dark:text-rose-400">
                                 <span>
-                                    Diskon Ekstra (+{extraDiscountPercent}%):
+                                    {t.financial.discount.extraDiscount} (+
+                                    {extraDiscountPercent}%):
                                 </span>
                                 <span className="font-mono font-medium">
                                     -{" "}
@@ -267,7 +282,9 @@ export const TaxDiscountCalculator: React.FC = () => {
                         )}
 
                         <div className="flex justify-between pt-1 border-t border-dashed border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
-                            <span>Subtotal setelah diskon:</span>
+                            <span>
+                                {t.financial.discount.priceAfterDiscount}:
+                            </span>
                             <span className="font-mono font-medium">
                                 {formatCurrency(
                                     results.priceAfterDiscount,
@@ -278,7 +295,10 @@ export const TaxDiscountCalculator: React.FC = () => {
 
                         {enableTax && (
                             <div className="flex justify-between text-amber-600 dark:text-amber-400">
-                                <span>Pajak PPN ({taxPercent}%):</span>
+                                <span>
+                                    {t.financial.discount.taxAmount} (
+                                    {taxPercent}%):
+                                </span>
                                 <span className="font-mono font-medium">
                                     + {formatCurrency(results.taxAmount, "IDR")}
                                 </span>
@@ -286,7 +306,7 @@ export const TaxDiscountCalculator: React.FC = () => {
                         )}
 
                         <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-800 font-bold text-slate-900 dark:text-white text-sm">
-                            <span>Total Bersih:</span>
+                            <span>{t.financial.discount.totalNet}:</span>
                             <span className="font-mono text-emerald-600 dark:text-emerald-400">
                                 {formatCurrency(results.finalPrice, "IDR")}
                             </span>
@@ -297,7 +317,9 @@ export const TaxDiscountCalculator: React.FC = () => {
                 <div className="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1.5">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                     <span>
-                        Kalkulasi diskon bertingkat standar ritel & perpajakan
+                        {locale === "en"
+                            ? "Standard tiered discount & tax calculation"
+                            : "Kalkulasi diskon bertingkat standar ritel & perpajakan"}
                     </span>
                 </div>
             </Card>

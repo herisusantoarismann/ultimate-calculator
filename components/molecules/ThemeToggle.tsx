@@ -4,12 +4,14 @@ import React, { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { STORAGE_KEYS } from "@/lib/constants";
 import { IconButton } from "@/components/atoms/IconButton";
+import { useTranslation } from "@/context/LanguageContext";
 
 /**
  * Molecule ThemeToggle component for switching dark and light theme
  * with persistence in localStorage and DOM class synchronization.
  */
 export const ThemeToggle: React.FC = () => {
+    const { t } = useTranslation();
     const [isDark, setIsDark] = useState(true);
 
     useEffect(() => {
@@ -41,7 +43,7 @@ export const ThemeToggle: React.FC = () => {
 
     return (
         <IconButton
-            aria-label={isDark ? "Ganti ke Mode Terang" : "Ganti ke Mode Gelap"}
+            aria-label={isDark ? t.common.themeLight : t.common.themeDark}
             variant="secondary"
             onClick={handleToggle}
             icon={
