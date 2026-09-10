@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
     formatCurrency,
     formatNumber,
-    formatDateIndo,
     calculateDateDiff,
     addSubtractDate,
 } from "@/utils/formatters";

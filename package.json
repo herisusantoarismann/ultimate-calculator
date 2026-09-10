@@ -37,7 +37,6 @@
         "@types/react-dom": "^19.2.7",
         "autoprefixer": "^10.4.20",
         "eslint": "^10.10.0",
-        "eslint-plugin-react": "^7.37.5",
         "jsdom": "^25.0.1",
         "postcss": "^8.4.47",
         "storybook": "^10.6.0",
